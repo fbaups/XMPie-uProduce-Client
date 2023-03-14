@@ -1,0 +1,29 @@
+{
+  "name": "arajcany/boilerplate-composer",
+  "description": "Clone as a starting point for Projects/Libraries.",
+  "type": "project",
+  "license": "MIT",
+  "require": {
+    "php": ">=8.0",
+    "ext-json": "*",
+    "fxaps/xmpie-wsdl-wrapper-uproduce": "12.*",
+    "cakephp/core": "^4.4",
+    "ext-soap": "*",
+    "cakephp/chronos": "^2.3"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*",
+    "symfony/var-dumper": "^6.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "App\\Test\\": "tests/"
+    }
+  },
+  "prefer-stable": true
+}

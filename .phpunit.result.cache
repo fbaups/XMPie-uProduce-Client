@@ -1,0 +1,1 @@
+{"version":1,"defects":{"App\\Test\\FooBarTest::testReturnFalse":3,"App\\Test\\XMPie\\uProduce\\ClientConfiguratorTest::testGetDataSourceClient":5},"times":{"App\\Test\\FooBarTest::testReturnTrue":0.025,"App\\Test\\FooBarTest::testReturnFalse":0,"App\\Test\\XMPie\\uProduce\\ClientConfiguratorTest::testGetDataSourceClient":0}}
