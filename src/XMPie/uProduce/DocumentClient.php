@@ -3,7 +3,6 @@
 namespace App\XMPie\uProduce;
 
 use SoapFault;
-use XMPieWsdlClient\XMPie\uProduce\v_12_0_1\BasicServices\Document_SSP\ArrayOfString;
 
 class DocumentClient extends BaseClient
 {
@@ -47,10 +46,10 @@ class DocumentClient extends BaseClient
     /**
      * @param $name
      * @param $campaignId
-     * @return string|null
+     * @return int|null
      * @throws SoapFault
      */
-    public function getId($name, $campaignId): ?string
+    public function getId($name, $campaignId): ?int
     {
         $Request = $this->RequestFabricator->Document_SSP()
             ->GetID()
@@ -59,7 +58,7 @@ class DocumentClient extends BaseClient
         $Service = $this->ServiceFabricator->Document_SSP();
         $result = $Service->GetID($Request);
 
-        return $result->getGetIDResult();
+        return intval($result->getGetIDResult());
     }
 
     /**
@@ -67,45 +66,16 @@ class DocumentClient extends BaseClient
      * @return string[]|null
      * @throws SoapFault
      */
-    public function getProperties($id): ?array
+    public function getAllProperties($id): ?array
     {
-        $strings = [
-            'campaignID',
-            'documentName',
-            //'documentLogicalName',
-            'documentCreated',
-            'documentModified',
-            'createdBy',
-            'modifiedBy',
-            'documentStatus',
-            'documentType',
-            'thumbnail',
-            'creatorApplication',
-            'plugInVersion',
-            'numberOfPages',
-            'pageWidth',
-            'pageHeight',
-            'preferredPrinterID',
-            'checkOutUserID',
-            'planID',
-            'planName',
-            'campaignModified',
-            'userCreateName',
-            'userModifyName',
-            'userCheckOutName',
-        ];
-        $p = new ArrayOfString();
-        $p->setString($strings);
-
         $Request = $this->RequestFabricator->Document_SSP()
-            ->GetProperties()
-            ->setInDocumentID($id)
-            ->setInPropertiesNames($p);
+            ->GetAllProperties()
+            ->setInDocumentID($id);
         $Service = $this->ServiceFabricator->Document_SSP();
-        $result = $Service->GetProperties($Request);
+        $result = $Service->GetAllProperties($Request);
 
         $properties = [];
-        foreach ($result->getGetPropertiesResult() as $prop) {
+        foreach ($result->getGetAllPropertiesResult() as $prop) {
             $properties[$prop->getM_Name()] = $prop->getM_Value();
         }
 

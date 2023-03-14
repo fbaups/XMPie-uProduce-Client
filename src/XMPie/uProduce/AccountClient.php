@@ -3,7 +3,6 @@
 namespace App\XMPie\uProduce;
 
 use SoapFault;
-use XMPieWsdlClient\XMPie\uProduce\v_12_0_1\BasicServices\Account_SSP\ArrayOfString;
 
 class AccountClient extends BaseClient
 {
@@ -46,10 +45,10 @@ class AccountClient extends BaseClient
 
     /**
      * @param $name
-     * @return string|null
+     * @return int|null
      * @throws SoapFault
      */
-    public function getId($name): ?string
+    public function getId($name): ?int
     {
         $Request = $this->RequestFabricator->Account_SSP()
             ->GetID()
@@ -57,7 +56,7 @@ class AccountClient extends BaseClient
         $Service = $this->ServiceFabricator->Account_SSP();
         $result = $Service->GetID($Request);
 
-        return $result->getGetIDResult();
+        return intval($result->getGetIDResult());
     }
 
     /**
@@ -65,31 +64,17 @@ class AccountClient extends BaseClient
      * @return string[]|null
      * @throws SoapFault
      */
-    public function getProperties($id): ?array
+    public function getAllProperties($id): ?array
     {
-        $strings = [
-            'accountName',
-            'accountDescription',
-            'accountCreated',
-            'accountModified',
-            'createdBy',
-            'modifiedBy',
-            'customerID',
-            'userCreateName',
-            'userModifyName',
-        ];
-        $p = new ArrayOfString();
-        $p->setString($strings);
 
         $Request = $this->RequestFabricator->Account_SSP()
-            ->GetProperties()
-            ->setInAccountID($id)
-            ->setInPropertiesNames($p);
+            ->GetAllProperties()
+            ->setInAccountID($id);
         $Service = $this->ServiceFabricator->Account_SSP();
-        $result = $Service->GetProperties($Request);
+        $result = $Service->GetAllProperties($Request);
 
         $properties = [];
-        foreach ($result->getGetPropertiesResult() as $prop) {
+        foreach ($result->getGetAllPropertiesResult() as $prop) {
             $properties[$prop->getM_Name()] = $prop->getM_Value();
         }
 

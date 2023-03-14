@@ -10,6 +10,9 @@ class ClientFactory
     private array $soapOptions;
     private array $config;
 
+    private ?DestinationClient $DestinationClient = null;
+    private ?UserClient $UserClient = null;
+    private ?CustomerClient $CustomerClient = null;
     private ?AccountClient $AccountClient = null;
     private ?CampaignClient $CampaignClient = null;
     private ?PlanClient $PlanClient = null;
@@ -94,6 +97,19 @@ class ClientFactory
 
     /**
      * @param bool $refresh
+     * @return CustomerClient|null
+     */
+    public function CustomerClient(bool $refresh = false): ?CustomerClient
+    {
+        if ($refresh === true || $this->CustomerClient === null) {
+            $this->CustomerClient = new CustomerClient();
+        }
+
+        return $this->CustomerClient;
+    }
+
+    /**
+     * @param bool $refresh
      * @return AccountClient|null
      */
     public function AccountClient(bool $refresh = false): ?AccountClient
@@ -168,6 +184,32 @@ class ClientFactory
         }
 
         return $this->TempStorageClient;
+    }
+
+    /**
+     * @param bool $refresh
+     * @return DestinationClient|null
+     */
+    public function DestinationClient(bool $refresh = false): ?DestinationClient
+    {
+        if ($refresh === true || $this->DestinationClient === null) {
+            $this->DestinationClient = new DestinationClient();
+        }
+
+        return $this->DestinationClient;
+    }
+
+    /**
+     * @param bool $refresh
+     * @return UserClient|null
+     */
+    public function UserClient(bool $refresh = false): ?UserClient
+    {
+        if ($refresh === true || $this->UserClient === null) {
+            $this->UserClient = new UserClient();
+        }
+
+        return $this->UserClient;
     }
 
 

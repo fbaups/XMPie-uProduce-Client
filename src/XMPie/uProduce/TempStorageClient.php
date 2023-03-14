@@ -3,7 +3,6 @@
 namespace App\XMPie\uProduce;
 
 use SoapFault;
-use XMPieWsdlClient\XMPie\uProduce\v_12_0_1\BasicServices\TempStorage_SSP\ArrayOfString;
 
 class TempStorageClient extends BaseClient
 {

@@ -4,7 +4,7 @@ namespace App\XMPie\uProduce;
 
 use SoapFault;
 
-class CampaignClient extends BaseClient
+class UserClient extends BaseClient
 {
     public function __construct()
     {
@@ -18,10 +18,10 @@ class CampaignClient extends BaseClient
      */
     public function isExist($id): ?string
     {
-        $Request = $this->RequestFabricator->Campaign_SSP()
+        $Request = $this->RequestFabricator->User_SSP()
             ->IsExist()
-            ->setInCampaignID($id);
-        $Service = $this->ServiceFabricator->Campaign_SSP();
+            ->setInUserID($id);
+        $Service = $this->ServiceFabricator->User_SSP();
         $result = $Service->IsExist($Request);
 
         return $result->getIsExistResult();
@@ -34,31 +34,34 @@ class CampaignClient extends BaseClient
      */
     public function getName($id): ?string
     {
-        $Request = $this->RequestFabricator->Campaign_SSP()
-            ->GetName()
-            ->setInCampaignID($id);
-        $Service = $this->ServiceFabricator->Campaign_SSP();
-        $result = $Service->GetName($Request);
+        //native method does not exist so go via getAllProperties()
+        $props = $this->getAllProperties($id);
 
-        return $result->getGetNameResult();
+        if (isset($props['LoginName'])) {
+            return $props['LoginName'];
+        } elseif (isset($props['userEmail'])) {
+            return $props['userEmail'];
+        } elseif (isset($props['userFirstName']) && isset($props['userLastName'])) {
+            return $props['userFirstName'] . " " . $props['userLastName'];
+        } else {
+            return '';
+        }
     }
 
     /**
      * @param $name
-     * @param $accountId
-     * @return int|null
+     * @return string|null
      * @throws SoapFault
      */
-    public function getId($name, $accountId): ?int
+    public function getId($name): ?string
     {
-        $Request = $this->RequestFabricator->Campaign_SSP()
+        $Request = $this->RequestFabricator->User_SSP()
             ->GetID()
-            ->setInCampaignName($name)
-            ->setInAccountID($accountId);
-        $Service = $this->ServiceFabricator->Campaign_SSP();
+            ->setInUserName($name);
+        $Service = $this->ServiceFabricator->User_SSP();
         $result = $Service->GetID($Request);
 
-        return intval($result->getGetIDResult());
+        return $result->getGetIDResult();
     }
 
     /**
@@ -68,10 +71,11 @@ class CampaignClient extends BaseClient
      */
     public function getAllProperties($id): ?array
     {
-        $Request = $this->RequestFabricator->Campaign_SSP()
+
+        $Request = $this->RequestFabricator->User_SSP()
             ->GetAllProperties()
-            ->setInCampaignID($id);
-        $Service = $this->ServiceFabricator->Campaign_SSP();
+            ->setInUserID($id);
+        $Service = $this->ServiceFabricator->User_SSP();
         $result = $Service->GetAllProperties($Request);
 
         $properties = [];
@@ -89,10 +93,10 @@ class CampaignClient extends BaseClient
      */
     public function delete($id): ?bool
     {
-        $Request = $this->RequestFabricator->Campaign_SSP()
+        $Request = $this->RequestFabricator->User_SSP()
             ->Delete()
-            ->setInCampaignID($id);
-        $Service = $this->ServiceFabricator->Campaign_SSP();
+            ->setInUserID($id);
+        $Service = $this->ServiceFabricator->User_SSP();
         $result = $Service->Delete($Request);
 
         return $result->getDeleteResult();

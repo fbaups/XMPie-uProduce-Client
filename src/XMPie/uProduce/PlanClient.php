@@ -3,7 +3,6 @@
 namespace App\XMPie\uProduce;
 
 use SoapFault;
-use XMPieWsdlClient\XMPie\uProduce\v_12_0_1\BasicServices\Plan_SSP\ArrayOfString;
 
 class PlanClient extends BaseClient
 {
@@ -49,32 +48,16 @@ class PlanClient extends BaseClient
      * @return string[]|null
      * @throws SoapFault
      */
-    public function getProperties($id): ?array
+    public function getAllProperties($id): ?array
     {
-        $strings = [
-            'campaignID',
-            'planName',
-            'planCreated',
-            'planModified',
-            'createdBy',
-            'modifiedBy',
-            'checkOutUserID',
-            'userCreateName',
-            'userModifyName',
-            'userCheckOutName',
-        ];
-        $p = new ArrayOfString();
-        $p->setString($strings);
-
         $Request = $this->RequestFabricator->Plan_SSP()
-            ->GetProperties()
-            ->setInPlanID($id)
-            ->setInPropertiesNames($p);
+            ->GetAllProperties()
+            ->setInPlanID($id);
         $Service = $this->ServiceFabricator->Plan_SSP();
-        $result = $Service->GetProperties($Request);
+        $result = $Service->GetAllProperties($Request);
 
         $properties = [];
-        foreach ($result->getGetPropertiesResult() as $prop) {
+        foreach ($result->getGetAllPropertiesResult() as $prop) {
             $properties[$prop->getM_Name()] = $prop->getM_Value();
         }
 

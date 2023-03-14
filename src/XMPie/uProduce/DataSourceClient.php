@@ -5,7 +5,6 @@ namespace App\XMPie\uProduce;
 use Cake\Chronos\Chronos;
 use Cake\Core\Configure;
 use SoapFault;
-use XMPieWsdlClient\XMPie\uProduce\v_12_0_1\BasicServices\DataSource_SSP\ArrayOfString;
 use XMPieWsdlClient\XMPie\uProduce\v_12_0_1\BasicServices\DataSourcePlanUtils_SSP\RecipientsInfo as DataSourceRecipientsInfo;
 
 class DataSourceClient extends BaseClient
@@ -50,10 +49,10 @@ class DataSourceClient extends BaseClient
     /**
      * @param $name
      * @param $campaignId
-     * @return string|null
+     * @return int|null
      * @throws SoapFault
      */
-    public function getId($name, $campaignId): ?string
+    public function getId($name, $campaignId): ?int
     {
         $Request = $this->RequestFabricator->DataSource_SSP()
             ->GetID()
@@ -62,7 +61,7 @@ class DataSourceClient extends BaseClient
         $Service = $this->ServiceFabricator->DataSource_SSP();
         $result = $Service->GetID($Request);
 
-        return $result->getGetIDResult();
+        return intval($result->getGetIDResult());
     }
 
     /**
@@ -70,39 +69,16 @@ class DataSourceClient extends BaseClient
      * @return string[]|null
      * @throws SoapFault
      */
-    public function getProperties($id): ?array
+    public function getAllProperties($id): ?array
     {
-        $strings = [
-            'campaignID',
-            'dataSourceName',
-            'dataSourceType',
-            'dataSourceParams',
-            'dataSourceConnection',
-            'dataSourceCreated',
-            'dataSourceModified',
-            'createdBy',
-            'modifiedBy',
-            'checkOutUserID',
-            'dataSourceTypeName',
-            //'DataSourceObjectName',
-            //'DataSourceAspFile',
-            'DataSourceShow',
-            'userCreateName',
-            'userModifyName',
-            'userCheckOutName',
-        ];
-        $p = new ArrayOfString();
-        $p->setString($strings);
-
         $Request = $this->RequestFabricator->DataSource_SSP()
-            ->GetProperties()
-            ->setInDataSourceID($id)
-            ->setInPropertiesNames($p);
+            ->GetAllProperties()
+            ->setInDataSourceID($id);
         $Service = $this->ServiceFabricator->DataSource_SSP();
-        $result = $Service->GetProperties($Request);
+        $result = $Service->GetAllProperties($Request);
 
         $properties = [];
-        foreach ($result->getGetPropertiesResult() as $prop) {
+        foreach ($result->getGetAllPropertiesResult() as $prop) {
             $properties[$prop->getM_Name()] = $prop->getM_Value();
         }
 
