@@ -3,6 +3,7 @@
 namespace App\XMPie\uProduce;
 
 use SoapFault;
+use Throwable;
 
 class TempStorageClient extends BaseClient
 {
@@ -128,7 +129,7 @@ class TempStorageClient extends BaseClient
             $Response = $this->ServiceFabricator->TempStorage_SSP()->GetFileBinaryStreamSize($Request);
             $filesize = $Response->getGetFileBinaryStreamSizeResult();
             return true;
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             return false;
         }
     }
@@ -144,7 +145,7 @@ class TempStorageClient extends BaseClient
             $Response = $this->ServiceFabricator->TempStorage_SSP()->GetFolderFiles($Request);
             $files = $Response->getGetFolderFilesResult();
             return true;
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             return false;
         }
     }

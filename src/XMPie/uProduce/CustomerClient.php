@@ -49,7 +49,7 @@ class CustomerClient extends BaseClient
         if (isset($props['customerID'])) {
             return intval($props['customerID']);
         } else {
-            return 0;
+            return null;
         }
     }
 
@@ -99,6 +99,60 @@ class CustomerClient extends BaseClient
      * @return string[]|null
      * @throws SoapFault
      */
+    public function getAdminUserProperties(): ?array
+    {
+        $props = $this->getAllProperties();
+
+        if (isset($props['adminID'])) {
+            $UC = new UserClient();
+            $adminUser = $UC->getAllProperties($props['adminID']);
+        } else {
+            $adminUser = [];
+        }
+
+        return $adminUser;
+    }
+
+    /**
+     * @return int|null
+     * @throws SoapFault
+     */
+    public function getAdminUserId(): ?int
+    {
+        $props = $this->getAllProperties();
+
+        if (isset($props['adminID'])) {
+            $UC = new UserClient();
+            $adminUser = intval($UC->getAllProperties($props['adminID'])['userID']);
+        } else {
+            $adminUser = null;
+        }
+
+        return $adminUser;
+    }
+
+    /**
+     * @return string|null
+     * @throws SoapFault
+     */
+    public function getAdminUserLogin(): ?string
+    {
+        $props = $this->getAllProperties();
+
+        if (isset($props['adminID'])) {
+            $UC = new UserClient();
+            $adminUser = $UC->getAllProperties($props['adminID'])['LoginName'];
+        } else {
+            $adminUser = null;
+        }
+
+        return $adminUser;
+    }
+
+    /**
+     * @return string[]|null
+     * @throws SoapFault
+     */
     public function getUsers(): ?array
     {
         $Request = $this->RequestFabricator->Customer_SSP()
@@ -127,7 +181,7 @@ class CustomerClient extends BaseClient
         $Request = $this->RequestFabricator->Customer_SSP()
             ->GetDestinations();
 
-        if($type){
+        if ($type) {
             $Request = $Request->setInType($type);
         }
 
