@@ -100,7 +100,7 @@ class PlanClient extends BaseClient
      * @return array
      * @throws SoapFault
      */
-    public function getPlanRecipientFields($planId): array
+    public function getRecipientFields($planId): array
     {
         $Request = $this->RequestFabricator->PlanUtils_SSP()
             ->GetRecipientFields()
@@ -131,7 +131,7 @@ class PlanClient extends BaseClient
      * @return array
      * @throws SoapFault
      */
-    public function getPlanADORs($planId): array
+    public function getADORs($planId): array
     {
         $Request = $this->RequestFabricator->PlanUtils_SSP()->GetADORs()->setInPlanID($planId)->setInIOType('RW')->setInTrivialPlan(false);
         $Response = $this->ServiceFabricator->PlanUtils_SSP()->GetADORs($Request);
@@ -168,7 +168,7 @@ class PlanClient extends BaseClient
      * @return array
      * @throws SoapFault
      */
-    public function getPlanVariables($planId): array
+    public function getVariables($planId): array
     {
         $Request = $this->RequestFabricator->PlanUtils_SSP()->GetVariables()->setInPlanID($planId)->setInIOType('RW')->setInTrivialPlan(false);
         $Response = $this->ServiceFabricator->PlanUtils_SSP()->GetVariables($Request);

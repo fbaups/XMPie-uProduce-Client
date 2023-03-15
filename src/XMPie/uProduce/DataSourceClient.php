@@ -644,7 +644,7 @@ class DataSourceClient extends BaseClient
         }
 
         $PC = new PlanClient();
-        $recipientFields = $PC->getPlanRecipientFields($planId);
+        $recipientFields = $PC->getRecipientFields($planId);
         $inflectedHeaders = $this->getInflections();
 
         foreach ($fieldNames as $headerKey => $fieldName) {
