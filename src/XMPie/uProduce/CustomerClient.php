@@ -77,28 +77,6 @@ class CustomerClient extends BaseClient
      * @return string[]|null
      * @throws SoapFault
      */
-    public function getAccounts(): ?array
-    {
-        $Request = $this->RequestFabricator->Customer_SSP()
-            ->GetAccounts();
-        $Service = $this->ServiceFabricator->Customer_SSP();
-        $result = $Service->GetAccounts($Request);
-
-        $AC = new AccountClient();
-
-        $accounts = [];
-        foreach ($result->getGetAccountsResult() as $accountId) {
-            $accountId = intval($accountId);
-            $accounts[$accountId] = $AC->getAllProperties($accountId);
-        }
-
-        return $accounts;
-    }
-
-    /**
-     * @return string[]|null
-     * @throws SoapFault
-     */
     public function getAdminUserProperties(): ?array
     {
         $props = $this->getAllProperties();
@@ -153,6 +131,28 @@ class CustomerClient extends BaseClient
      * @return string[]|null
      * @throws SoapFault
      */
+    public function getAccounts(): ?array
+    {
+        $Request = $this->RequestFabricator->Customer_SSP()
+            ->GetAccounts();
+        $Service = $this->ServiceFabricator->Customer_SSP();
+        $result = $Service->GetAccounts($Request);
+
+        $AC = new AccountClient();
+
+        $accounts = [];
+        foreach ($result->getGetAccountsResult() as $accountId) {
+            $accountId = intval($accountId);
+            $accounts[$accountId] = $AC->getAllProperties($accountId);
+        }
+
+        return $accounts;
+    }
+
+    /**
+     * @return string[]|null
+     * @throws SoapFault
+     */
     public function getUsers(): ?array
     {
         $Request = $this->RequestFabricator->Customer_SSP()
@@ -191,9 +191,9 @@ class CustomerClient extends BaseClient
         $UC = new DestinationClient();
 
         $destinations = [];
-        foreach ($result->getGetDestinationsResult() as $userId) {
-            $userId = intval($userId);
-            $destinations[$userId] = $UC->getAllProperties($userId);
+        foreach ($result->getGetDestinationsResult() as $destinationId) {
+            $destinationId = intval($destinationId);
+            $destinations[$destinationId] = $UC->getAllProperties($destinationId);
         }
 
         return $destinations;
