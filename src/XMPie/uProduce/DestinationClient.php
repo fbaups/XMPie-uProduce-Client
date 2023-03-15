@@ -28,6 +28,44 @@ class DestinationClient extends BaseClient
     }
 
     /**
+     * Validate the Destination by Name or ID.
+     * Will check that the current username/password can actually access the Destination
+     * Will return the Destination ID or false
+     *
+     * @param int|string $nameOrId
+     * @return int|false
+     * @throws SoapFault
+     */
+    public function validate(int|string $nameOrId): bool|int
+    {
+        if (is_numeric($nameOrId)) {
+            if ($this->isExist($nameOrId)) {
+                try {
+                    $props = $this->getAllProperties($nameOrId);
+                    if (isset($props['printerID'])) {
+                        return intval($nameOrId);
+                    } else {
+                        return false;
+                    }
+                } catch (\Throwable $exception) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } elseif (is_string($nameOrId)) {
+            $id = $this->getId($nameOrId);
+            if ($id !== 0) {
+                return $id;
+            } else {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @param $id
      * @return string|null
      * @throws SoapFault
