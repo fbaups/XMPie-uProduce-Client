@@ -137,7 +137,7 @@ class ClientFactory
 
     /**
      * @param bool $refresh
-     * @return DataSourceClient|null
+     * @return PlanClient|null
      */
     public function PlanClient(bool $refresh = false): ?PlanClient
     {
