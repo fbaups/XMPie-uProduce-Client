@@ -36,6 +36,35 @@ class DataSourceClient extends BaseClient
     }
 
     /**
+     * Validate the DataSource by ID.
+     * Will check that the current username/password can actually access the DataSource
+     * Will return the DataSource ID or false
+     *
+     * You cannot validate a DataSource Name as DataSource Names are not unique
+     *
+     * @param int $id
+     * @return int|false
+     * @throws SoapFault
+     */
+    public function validate(int $id): bool|int
+    {
+        if ($this->isExist($id)) {
+            try {
+                $props = $this->getAllProperties($id);
+                if (isset($props['dataSourceID'])) {
+                    return intval($id);
+                } else {
+                    return false;
+                }
+            } catch (\Throwable $exception) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * @param $id
      * @return string|null
      * @throws SoapFault

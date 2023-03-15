@@ -28,6 +28,35 @@ class PlanClient extends BaseClient
     }
 
     /**
+     * Validate the Plan by ID.
+     * Will check that the current username/password can actually access the Plan
+     * Will return the Plan ID or false
+     *
+     * You cannot validate a Plan Name as Plan Names are not unique
+     *
+     * @param int $id
+     * @return int|false
+     * @throws SoapFault
+     */
+    public function validate(int $id): bool|int
+    {
+        if ($this->isExist($id)) {
+            try {
+                $props = $this->getAllProperties($id);
+                if (isset($props['planID'])) {
+                    return intval($id);
+                } else {
+                    return false;
+                }
+            } catch (\Throwable $exception) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * @param $id
      * @return string|null
      * @throws SoapFault

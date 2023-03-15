@@ -28,6 +28,49 @@ class CampaignClient extends BaseClient
     }
 
     /**
+     * Validate the Campaign by Name or ID.
+     * Will check that the current username/password can actually access the Campaign
+     * Will return the Campaign ID or false
+     *
+     * @param int|string $nameOrId
+     * @param int|null $accountId only needed if you are trying to validate a name as names are not unique across Accounts (i.e. you need to target specific Account)
+     * @return int|false
+     * @throws SoapFault
+     */
+    public function validate(int|string $nameOrId, int $accountId = null): bool|int
+    {
+        if (is_numeric($nameOrId)) {
+            if ($this->isExist($nameOrId)) {
+                try {
+                    $props = $this->getAllProperties($nameOrId);
+                    if (isset($props['campaignID'])) {
+                        return intval($nameOrId);
+                    } else {
+                        return false;
+                    }
+                } catch (\Throwable $exception) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } elseif (is_string($nameOrId)) {
+            if (is_int($accountId)) {
+                $id = $this->getId($nameOrId, $accountId);
+                if ($id !== 0) {
+                    return $id;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @param $id
      * @return string|null
      * @throws SoapFault
