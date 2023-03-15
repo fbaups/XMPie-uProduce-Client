@@ -66,7 +66,6 @@ class AccountClient extends BaseClient
      */
     public function getAllProperties($id): ?array
     {
-
         $Request = $this->RequestFabricator->Account_SSP()
             ->GetAllProperties()
             ->setInAccountID($id);
