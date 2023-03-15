@@ -4,6 +4,11 @@ namespace App\XMPie\uProduce;
 
 use Cake\Chronos\Chronos;
 use Cake\Core\Configure;
+use Cake\Utility\Inflector;
+use League\Csv\Reader;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Csv;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use SoapFault;
 use XMPieWsdlClient\XMPie\uProduce\v_12_0_1\BasicServices\DataSourcePlanUtils_SSP\RecipientsInfo as DataSourceRecipientsInfo;
 
@@ -387,6 +392,308 @@ class DataSourceClient extends BaseClient
         }
 
         return $tablesAsArray;
+    }
+
+
+    /**
+     * Convert a simple array to a file
+     *
+     * @param $rawData
+     * @param $planId
+     * @param $saveLocation
+     * @return bool
+     * @throws SoapFault
+     */
+    public function convertRawDataToDataFileForPlan($rawData, $planId, $saveLocation): bool
+    {
+        $cleanData = $this->formatRawDataForWriting($rawData);
+        if (!$cleanData) {
+            return false;
+        }
+
+        //extract and inflect the headers
+        $headers = array_keys($cleanData[0]);
+        $headers = $this->inflectHeadersToPlanRecipientFields($headers, $planId);
+
+        //ok to convert to csv
+        try {
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->setTitle('recipients');
+
+            //write the header row
+            $rowCounter = 1;
+            $cellCounter = 1;
+            foreach ($headers as $header) {
+                $sheet->setCellValue([$cellCounter, $rowCounter], $header);
+                $cellCounter++;
+            }
+
+            //write the data rows
+            $rowCounter = 2;
+            foreach ($cleanData as $row) {
+                $cellCounter = 1;
+                foreach ($row as $cell) {
+                    $sheet->setCellValue([$cellCounter, $rowCounter], $cell);
+                    $cellCounter++;
+                }
+                $rowCounter++;
+            }
+
+            $ext = pathinfo($saveLocation, PATHINFO_EXTENSION);
+
+            if (in_array(strtolower($ext), ['csv', 'tsv', 'psv'])) {
+                $writer = new Csv($spreadsheet);
+                if (strtolower($ext) === 'csv') {
+                    $writer->setDelimiter(',');
+                } elseif (strtolower($ext) === 'tsv') {
+                    $writer->setDelimiter("\t");
+                } elseif (strtolower($ext) === 'psv') {
+                    $writer->setDelimiter('|');
+                }
+                $writer->setEnclosure('"');
+                $writer->save($saveLocation);
+            } elseif (in_array(strtolower($ext), ['xls', 'xlsx'])) {
+                $writer = new Xlsx($spreadsheet);
+                $writer->save($saveLocation);
+            }
+        } catch (\Throwable $e) {
+            return false;
+        }
+
+        if ($this->is_file_with_wait($saveLocation)) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+
+    /**
+     * Format unknown format raw data as a clean array ready for conversion to csv/xls
+     *
+     * @param mixed $rawData
+     * @return array|false
+     */
+    public function formatRawDataForWriting(mixed $rawData): array|false
+    {
+        $data = false;
+        $dataClean = [];
+
+        //try converting an object
+        if (is_object($rawData)) {
+            try {
+                $data = $rawData->toArray();
+            } catch (\Throwable $exception) {
+                return false;
+            }
+        }
+
+        //try CSV decoding
+        if (is_string($rawData)) {
+            $rawDataTmp = trim($rawData);
+            $rawDataTmp = str_replace("\r\n", "\n", $rawDataTmp);
+            $rawDataTmp = str_replace("\r", "\n", $rawDataTmp);
+            $lineCount = substr_count($rawDataTmp, "\n");
+
+            $delimiters = [",", ";", ":", "|", "\t"];
+            $highestDelimiterCount = 0;
+            $highestDelimiter = false;
+            foreach ($delimiters as $delimiter) {
+                $currentCount = substr_count($rawData, $delimiter);
+                if ($currentCount > $highestDelimiterCount) {
+                    $highestDelimiterCount = $currentCount;
+                    $highestDelimiter = $delimiter;
+                }
+            }
+
+            if ($highestDelimiter && $lineCount >= 2 && $highestDelimiterCount >= $lineCount) {
+                try {
+                    $csv = Reader::createFromString($rawData);
+                    $csv->setHeaderOffset(0);
+                    $csv->setDelimiter($highestDelimiter);
+                    $recs = $csv->getRecords();
+                    $dataClean = [];
+                    foreach ($recs as $rec) {
+                        $dataClean[] = $rec;
+                    }
+                    return $dataClean;
+                } catch (\Throwable $exception) {
+                    return false;
+                }
+            }
+        }
+
+        //try JSON decoding
+        if (is_string($rawData)) {
+            $data = json_decode($rawData, JSON_OBJECT_AS_ARRAY);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                $data = false;
+            }
+        }
+
+        //if it is already and array
+        if (is_array($rawData)) {
+            $data = $rawData;
+        }
+
+        //should be an array or false by now
+        if (!is_array($data)) {
+            return false;
+        }
+
+        /*
+         * Formatting and return clean array (or false is problematic)
+         */
+
+        //make sure it has more than 1 row
+        if (count($data) === 1) {
+            return false;
+        }
+
+        //make sure it's multi-dimensional
+        if (count($data) === count($data, COUNT_RECURSIVE)) {
+            return false;
+        }
+
+        //make sure first level is numerically indexed
+        if (!array_is_list($data)) {
+            return false;
+        }
+
+        //make sure 1st row is an array
+        if (!is_array($data[0])) {
+            return false;
+        }
+
+        //make sure it's 'square'
+        if ((count($data) * count($data[0])) != (count($data, COUNT_RECURSIVE) - count($data))) {
+            return false;
+        }
+
+        //if first row is sequential array, try and use them as headers
+        if (array_is_list($data[0])) {
+            $headers = $data[0];
+            foreach ($headers as $header) {
+                if (is_numeric($header) || strlen($header) === 0) {
+                    return false;
+                }
+            }
+            unset($data[0]);
+        } else {
+            $headers = array_keys($data[0]);
+            foreach ($headers as $header) {
+                if (strlen($header) === 0) {
+                    return false;
+                }
+            }
+        }
+
+        foreach ($data as $dataRow) {
+            $dataClean[] = array_combine($headers, $dataRow);
+        }
+
+        return $dataClean;
+    }
+
+    /**
+     * Inflect the given $fieldName to match the Plan recipient field names
+     *
+     * @param string|array $fieldNames
+     * @param int $planId
+     * @return array|string
+     * @throws SoapFault
+     */
+    public function inflectHeadersToPlanRecipientFields(array|string $fieldNames, int $planId): array|string
+    {
+        if (is_string($fieldNames)) {
+            $fieldNames = [$fieldNames];
+            $format = 'string';
+        } else {
+            $format = 'array';
+        }
+
+        $PC = new PlanClient();
+        $recipientFields = $PC->getPlanRecipientFields($planId);
+        $inflectedHeaders = $this->getInflections();
+
+        foreach ($fieldNames as $headerKey => $fieldName) {
+            foreach ($recipientFields as $recipientField) {
+                foreach ($inflectedHeaders as $inflectedHeaderGroup) {
+                    foreach ($inflectedHeaderGroup as $inflectedHeaderItem) {
+                        if ($recipientField['name'] == $inflectedHeaderItem) {
+                            if (in_array($fieldName, $inflectedHeaderGroup)) {
+                                $fieldNames[$headerKey] = $inflectedHeaderItem;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if ($format == 'string') {
+            return implode("", $fieldNames);
+        } else {
+            return $fieldNames;
+        }
+    }
+
+    /**
+     * The search and replace arrays for converting random column names to valid PlanRecipientFields names
+     *
+     * @return array
+     */
+    public function getInflections(): array
+    {
+        $inflections = [
+            ['badge_id', 'badge_number', 'staff_number', 'staff_id', 'employee_number', 'employee_id'],
+            ['first', 'first_name', 'f_name', 'fname', 'christian name', 'given_name', 'FirstName_VAR',],
+            ['last', 'last_name', 'l_name', 'lname', 'surname', 'LastName_VAR',],
+            ['middle', 'middle_name', 'm_name', 'mname', 'MiddleName_VAR',],
+            ['address', 'address 1',],
+            ['postcode', 'post code', 'zip', 'zip code', 'zipcode',],
+            ['email', 'gmail', 'icloud', 'hotmail', 'email address',],
+            ['company', 'company_name', 'business', 'business_name', 'organisation', 'organization', 'organisation_name', 'organization_name',],
+            ['dob', 'd o b', 'd.o.b','date of birth', 'birthdate',  'birth date','birthday',  'birth day', 'born'],
+        ];
+
+        $inflectionsExpanded = [];
+
+        foreach ($inflections as $k => $inflectionGroup) {
+            $inflectionsExpanded[$k] = [];
+            foreach ($inflectionGroup as $p => $inflectionItem) {
+                $inflectionsExpanded[$k]['original' . "-$p"] = $inflectionItem;
+
+                $inflectionItemDashed = Inflector::dasherize($inflectionItem);
+                $inflectionItemSpaced = str_replace("-", " ", $inflectionItemDashed);
+                $inflectionItemUnderscored = str_replace("-", "_", $inflectionItemDashed);
+
+                $inflectionsExpanded[$k]['dash' . "-$p"] = $inflectionItemDashed;
+                $inflectionsExpanded[$k]['underscore' . "-$p"] = $inflectionItemUnderscored;
+                $inflectionsExpanded[$k]['camel' . "-$p"] = Inflector::camelize($inflectionItemSpaced);
+                $inflectionsExpanded[$k]['variable' . "-$p"] = Inflector::variable($inflectionItemDashed);
+
+                $inflectionsExpanded[$k]['lower' . "-$p"] = $inflectionItemSpaced;
+                $inflectionsExpanded[$k]['upper' . "-$p"] = strtoupper($inflectionItemSpaced);
+                $inflectionsExpanded[$k]['ucwords' . "-$p"] = Inflector::humanize($inflectionItemSpaced);
+                $inflectionsExpanded[$k]['ucfirst' . "-$p"] = ucfirst(strtolower(Inflector::humanize($inflectionItemSpaced)));
+
+                $inflectionsExpanded[$k]['dash-lower' . "-$p"] = str_replace(" ", "-", $inflectionsExpanded[$k]['lower' . "-$p"]);
+                $inflectionsExpanded[$k]['dash-upper' . "-$p"] = str_replace(" ", "-", $inflectionsExpanded[$k]['upper' . "-$p"]);
+                $inflectionsExpanded[$k]['dash-ucwords' . "-$p"] = str_replace(" ", "-", $inflectionsExpanded[$k]['ucwords' . "-$p"]);
+                $inflectionsExpanded[$k]['dash-ucfirst' . "-$p"] = str_replace(" ", "-", $inflectionsExpanded[$k]['ucfirst' . "-$p"]);
+
+                $inflectionsExpanded[$k]['underscore-lower' . "-$p"] = str_replace(" ", "_", $inflectionsExpanded[$k]['lower' . "-$p"]);
+                $inflectionsExpanded[$k]['underscore-upper' . "-$p"] = str_replace(" ", "_", $inflectionsExpanded[$k]['upper' . "-$p"]);
+                $inflectionsExpanded[$k]['underscore-ucwords' . "-$p"] = str_replace(" ", "_", $inflectionsExpanded[$k]['ucwords' . "-$p"]);
+                $inflectionsExpanded[$k]['underscore-ucfirst' . "-$p"] = str_replace(" ", "_", $inflectionsExpanded[$k]['ucfirst' . "-$p"]);
+            }
+
+            $inflectionsExpanded[$k] = array_values(array_unique($inflectionsExpanded[$k]));
+        }
+
+        return $inflectionsExpanded;
     }
 
 

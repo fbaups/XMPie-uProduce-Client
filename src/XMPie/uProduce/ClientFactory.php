@@ -19,6 +19,7 @@ class ClientFactory
     private ?DataSourceClient $DataSourceClient = null;
     private ?DocumentClient $DocumentClient = null;
     private ?TempStorageClient $TempStorageClient = null;
+    private ?LicensingClient $LicensingClient = null;
 
     public function __construct(array $xmpOptions = [], array $soapOptions = [], array $config = [])
     {
@@ -210,6 +211,19 @@ class ClientFactory
         }
 
         return $this->UserClient;
+    }
+
+    /**
+     * @param bool $refresh
+     * @return LicensingClient|null
+     */
+    public function LicensingClient(bool $refresh = false): ?LicensingClient
+    {
+        if ($refresh === true || $this->LicensingClient === null) {
+            $this->LicensingClient = new LicensingClient();
+        }
+
+        return $this->LicensingClient;
     }
 
 

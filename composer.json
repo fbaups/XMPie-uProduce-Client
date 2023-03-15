@@ -9,7 +9,9 @@
     "fxaps/xmpie-wsdl-wrapper-uproduce": "12.*",
     "cakephp/core": "^4.4",
     "ext-soap": "*",
-    "cakephp/chronos": "^2.3"
+    "cakephp/chronos": "^2.3",
+    "phpoffice/phpspreadsheet": "^1.28",
+    "league/csv": "^9.9"
   },
   "require-dev": {
     "phpunit/phpunit": "*",

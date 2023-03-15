@@ -25,5 +25,54 @@ class BaseClient
         $Factory = new uProduceFactory($this->xmpOptions, $this->soapOptions, $this->config);
         $this->RequestFabricator = $Factory->getUProduceRequestFabricator();
         $this->ServiceFabricator = $Factory->getUProduceServiceFabricator();
+
+        $this->polyfillFunctions();
+    }
+
+    /**
+     * Polyfill functions for < PHP 8.1
+     */
+    private function polyfillFunctions(): void
+    {
+        if (!function_exists("array_is_list")) {
+            function array_is_list(array $array): bool
+            {
+                $i = -1;
+                foreach ($array as $k => $v) {
+                    ++$i;
+                    if ($k !== $i) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+    }
+
+    /**
+     * Extension of is_file() but with a wait time to give FS as chance to complete operations.
+     *
+     * @param string $filename
+     * @param int $waitForSeconds how long to wait up to in secs
+     * @return bool
+     */
+    public function is_file_with_wait(string $filename, int $waitForSeconds = 1): bool
+    {
+        $waitForSeconds = min($waitForSeconds, 10);//hard limit of 10 seconds
+
+        $cycles = 10;
+        $tries = range(1, $cycles);
+        $waitForSeconds = ($waitForSeconds * 1000000) / $cycles;
+
+        foreach ($tries as $try) {
+            $result = is_file($filename);
+            if ($result) {
+                return true;
+            } else {
+                usleep($waitForSeconds);
+            }
+        }
+
+        return false;
     }
 }
