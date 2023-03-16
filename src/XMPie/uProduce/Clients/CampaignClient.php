@@ -1,10 +1,10 @@
 <?php
 
-namespace App\XMPie\uProduce;
+namespace App\XMPie\uProduce\Clients;
 
 use SoapFault;
 
-class DestinationClient extends BaseClient
+class CampaignClient extends BaseClient
 {
     public function __construct()
     {
@@ -18,31 +18,32 @@ class DestinationClient extends BaseClient
      */
     public function isExist($id): ?string
     {
-        $Request = $this->RequestFabricator->Destination_SSP()
+        $Request = $this->RequestFabricator->Campaign_SSP()
             ->IsExist()
-            ->setInDestinationID($id);
-        $Service = $this->ServiceFabricator->Destination_SSP();
+            ->setInCampaignID($id);
+        $Service = $this->ServiceFabricator->Campaign_SSP();
         $result = $Service->IsExist($Request);
 
         return $result->getIsExistResult();
     }
 
     /**
-     * Validate the Destination by Name or ID.
-     * Will check that the current username/password can actually access the Destination
-     * Will return the Destination ID or false
+     * Validate the Campaign by Name or ID.
+     * Will check that the current username/password can actually access the Campaign
+     * Will return the Campaign ID or false
      *
      * @param int|string $nameOrId
+     * @param int|null $accountId only needed if you are trying to validate a name as names are not unique across Accounts (i.e. you need to target specific Account)
      * @return int|false
      * @throws SoapFault
      */
-    public function validate(int|string $nameOrId): bool|int
+    public function validate(int|string $nameOrId, int $accountId = null): bool|int
     {
         if (is_numeric($nameOrId)) {
             if ($this->isExist($nameOrId)) {
                 try {
                     $props = $this->getAllProperties($nameOrId);
-                    if (isset($props['printerID'])) {
+                    if (isset($props['campaignID'])) {
                         return intval($nameOrId);
                     } else {
                         return false;
@@ -54,9 +55,13 @@ class DestinationClient extends BaseClient
                 return false;
             }
         } elseif (is_string($nameOrId)) {
-            $id = $this->getId($nameOrId);
-            if ($id !== 0) {
-                return $id;
+            if (is_int($accountId)) {
+                $id = $this->getId($nameOrId, $accountId);
+                if ($id !== 0) {
+                    return $id;
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
@@ -72,27 +77,28 @@ class DestinationClient extends BaseClient
      */
     public function getName($id): ?string
     {
-        //native method does not exist so go via getAllProperties()
-        $props = $this->getAllProperties($id);
+        $Request = $this->RequestFabricator->Campaign_SSP()
+            ->GetName()
+            ->setInCampaignID($id);
+        $Service = $this->ServiceFabricator->Campaign_SSP();
+        $result = $Service->GetName($Request);
 
-        if (isset($props['printerName'])) {
-            return $props['printerName'];
-        } else {
-            return '';
-        }
+        return $result->getGetNameResult();
     }
 
     /**
      * @param $name
+     * @param $accountId
      * @return int|null
      * @throws SoapFault
      */
-    public function getId($name): ?int
+    public function getId($name, $accountId): ?int
     {
-        $Request = $this->RequestFabricator->Destination_SSP()
+        $Request = $this->RequestFabricator->Campaign_SSP()
             ->GetID()
-            ->setInDestinationName($name);
-        $Service = $this->ServiceFabricator->Destination_SSP();
+            ->setInCampaignName($name)
+            ->setInAccountID($accountId);
+        $Service = $this->ServiceFabricator->Campaign_SSP();
         $result = $Service->GetID($Request);
 
         return intval($result->getGetIDResult());
@@ -105,10 +111,10 @@ class DestinationClient extends BaseClient
      */
     public function getAllProperties($id): ?array
     {
-        $Request = $this->RequestFabricator->Destination_SSP()
+        $Request = $this->RequestFabricator->Campaign_SSP()
             ->GetAllProperties()
-            ->setInDestinationID($id);
-        $Service = $this->ServiceFabricator->Destination_SSP();
+            ->setInCampaignID($id);
+        $Service = $this->ServiceFabricator->Campaign_SSP();
         $result = $Service->GetAllProperties($Request);
 
         $properties = [];
@@ -126,10 +132,10 @@ class DestinationClient extends BaseClient
      */
     public function delete($id): ?bool
     {
-        $Request = $this->RequestFabricator->Destination_SSP()
+        $Request = $this->RequestFabricator->Campaign_SSP()
             ->Delete()
-            ->setInDestinationID($id);
-        $Service = $this->ServiceFabricator->Destination_SSP();
+            ->setInCampaignID($id);
+        $Service = $this->ServiceFabricator->Campaign_SSP();
         $result = $Service->Delete($Request);
 
         return $result->getDeleteResult();

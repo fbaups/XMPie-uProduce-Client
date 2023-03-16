@@ -1,6 +1,6 @@
 <?php
 
-namespace App\XMPie\uProduce;
+namespace App\XMPie\uProduce\Clients;
 
 use Cake\Core\Configure;
 use Cake\Utility\Xml;

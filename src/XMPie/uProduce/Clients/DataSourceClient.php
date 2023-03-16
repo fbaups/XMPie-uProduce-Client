@@ -1,6 +1,6 @@
 <?php
 
-namespace App\XMPie\uProduce;
+namespace App\XMPie\uProduce\Clients;
 
 use Cake\Chronos\Chronos;
 use Cake\Core\Configure;
