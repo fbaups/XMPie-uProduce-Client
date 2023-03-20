@@ -126,6 +126,62 @@ class JobClient extends BaseClient
     }
 
     /**
+     * @param $id
+     * @param int $index
+     * @return string|null
+     * @throws SoapFault
+     */
+    public function getOutputResultBinaryFileStream($id, int $index = 0): ?string
+    {
+        $Request = $this->RequestFabricator->Job_SSP()
+            ->GetOutputResultBinaryFileStream()
+            ->setInJobID($id)
+            ->setInResultIndex($index);
+        $Service = $this->ServiceFabricator->Job_SSP();
+        $result = $Service->GetOutputResultBinaryFileStream($Request);
+
+        return $result->getGetOutputResultBinaryFileStreamResult();
+    }
+
+    /**
+     * @param $id
+     * @param int $index
+     * @return int|null
+     * @throws SoapFault
+     */
+    public function getOutputResultBinaryFileStreamSize($id, int $index = 0): ?int
+    {
+        $Request = $this->RequestFabricator->Job_SSP()
+            ->GetOutputResultBinaryFileStreamSize()
+            ->setInJobID($id)
+            ->setInResultIndex($index);
+        $Service = $this->ServiceFabricator->Job_SSP();
+        $result = $Service->GetOutputResultBinaryFileStreamSize($Request);
+
+        return intval($result->getGetOutputResultBinaryFileStreamSizeResult());
+    }
+
+    /**
+     * @param $id
+     * @param int $index
+     * @return string|null
+     * @throws SoapFault
+     */
+    public function getOutputResultDownloadURL($id, int $index = 0): ?string
+    {
+        $Request = $this->RequestFabricator->Job_SSP()
+            ->GetOutputResultDownloadURL()
+            ->setInJobID($id)
+            ->setInResultIndex($index)
+            ->setInIsInline(true)
+            ->setInReturnInternalURL(false);
+        $Service = $this->ServiceFabricator->Job_SSP();
+        $result = $Service->GetOutputResultDownloadURL($Request);
+
+        return $result->getGetOutputResultDownloadURLResult();
+    }
+
+    /**
      * Get the Job Status by Job ID
      *
      * Value    Description
@@ -155,10 +211,11 @@ class JobClient extends BaseClient
 
     /**
      * @param $id
+     * @param bool $includeDownloadUrl can be expensive if multiple files
      * @return array|false
      * @throws SoapFault
      */
-    public function getOutputResultsInfo($id): bool|array
+    public function getOutputResultsInfo($id, bool $includeDownloadUrl = false): bool|array
     {
         $Request = $this->RequestFabricator->Job_SSP()
             ->GetOutputResultsInfo()
@@ -177,14 +234,11 @@ class JobClient extends BaseClient
         $propsCleaned = [];
 
         foreach ($props as $k => $prop) {
-            //the download URL
-            $Request2 = $this->RequestFabricator->Job_SSP()->GetOutputResultDownloadURL()
-                ->setInJobID($id)
-                ->setInResultIndex($k)
-                ->setInIsInline(true)
-                ->setInReturnInternalURL(false);
-            $Response2 = $this->ServiceFabricator->Job_SSP()->GetOutputResultDownloadURL($Request2);
-            $url = $Response2->getGetOutputResultDownloadURLResult();
+            if ($includeDownloadUrl) {
+                $url = $this->getOutputResultDownloadURL($id, $k);
+            } else {
+                $url = null;
+            }
 
             $propsCleaned[] = [
                 'DownloadURL' => $url,
@@ -196,6 +250,22 @@ class JobClient extends BaseClient
         }
 
         return $propsCleaned;
+    }
+
+    /**
+     * @param $id
+     * @return int
+     * @throws SoapFault
+     */
+    public function getOutputCount($id): int
+    {
+        $Request = $this->RequestFabricator->Job_SSP()
+            ->GetOutputResults()
+            ->setInJobID($id);
+        $Service = $this->ServiceFabricator->Job_SSP();
+        $result = $Service->GetOutputResults($Request);
+
+        return $result->getGetOutputResultsResult()->count();
     }
 
     /**
