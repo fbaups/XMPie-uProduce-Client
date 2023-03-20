@@ -42,3 +42,4 @@ nbproject/*
 /composer.phar
 /data/tickle.sqlite
 /Examples/
+/tests/XMPie/uProduce/configuration.json

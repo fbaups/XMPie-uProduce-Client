@@ -13,10 +13,10 @@ class DocumentClient extends BaseClient
 
     /**
      * @param $id
-     * @return string|null
+     * @return bool|null
      * @throws SoapFault
      */
-    public function isExist($id): ?string
+    public function isExist($id): ?bool
     {
         $Request = $this->RequestFabricator->Document_SSP()
             ->IsExist()
