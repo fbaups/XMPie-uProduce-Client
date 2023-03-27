@@ -21,7 +21,9 @@ class ClientFactory
     private ?TempStorageClient $TempStorageClient = null;
     private ?LicensingClient $LicensingClient = null;
     private ?JobClient $JobClient = null;
+    private ?JobTicketClient $JobTicketClient = null;
     private ?JobMessageClient $JobMessageClient = null;
+    private ?ProductionClient $ProductionClient = null;
 
     public function __construct(array $xmpOptions = [], array $soapOptions = [], array $config = [])
     {
@@ -252,6 +254,32 @@ class ClientFactory
         }
 
         return $this->JobMessageClient;
+    }
+
+    /**
+     * @param bool $refresh
+     * @return JobTicketClient|null
+     */
+    public function JobTicketClient(bool $refresh = false): ?JobTicketClient
+    {
+        if ($refresh === true || $this->JobTicketClient === null) {
+            $this->JobTicketClient = new JobTicketClient();
+        }
+
+        return $this->JobTicketClient;
+    }
+
+    /**
+     * @param bool $refresh
+     * @return ProductionClient|null
+     */
+    public function ProductionClient(bool $refresh = false): ?ProductionClient
+    {
+        if ($refresh === true || $this->ProductionClient === null) {
+            $this->ProductionClient = new ProductionClient();
+        }
+
+        return $this->ProductionClient;
     }
 
 

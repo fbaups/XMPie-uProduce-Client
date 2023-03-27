@@ -11,7 +11,8 @@
     "ext-soap": "*",
     "cakephp/chronos": "^2.3",
     "phpoffice/phpspreadsheet": "^1.28",
-    "league/csv": "^9.9"
+    "league/csv": "^9.9",
+    "ext-dom": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "*",
