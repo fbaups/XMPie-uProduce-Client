@@ -4,7 +4,7 @@ XMPie uProduce client to perform hig level tasks against the API.
 
 Provides a wrapper to perform common actions such as:
 
-- Create a new Account/Camping
+- Create a new Account/Campaign
 - Create a new Datasource
 - Upload a new Document
 - Execute a production/proof run

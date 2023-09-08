@@ -3,11 +3,11 @@
 namespace App\XMPie\uProduce\Clients;
 
 use SoapFault;
-use XMPieWsdlClient\XMPie\uProduce\v_12_0_1\ProductionServices\JobTicket_SSP\ArrayOfParameter;
-use XMPieWsdlClient\XMPie\uProduce\v_12_0_1\ProductionServices\JobTicket_SSP\ArrayOfString;
-use XMPieWsdlClient\XMPie\uProduce\v_12_0_1\ProductionServices\JobTicket_SSP\Connection;
-use XMPieWsdlClient\XMPie\uProduce\v_12_0_1\ProductionServices\JobTicket_SSP\parameter;
-use XMPieWsdlClient\XMPie\uProduce\v_12_0_1\ProductionServices\JobTicket_SSP\RecipientsInfo;
+use XMPieWsdlClient\XMPie\uProduce\v_12_2\ProductionServices\JobTicket_SSP\ArrayOfParameter;
+use XMPieWsdlClient\XMPie\uProduce\v_12_2\ProductionServices\JobTicket_SSP\ArrayOfString;
+use XMPieWsdlClient\XMPie\uProduce\v_12_2\ProductionServices\JobTicket_SSP\Connection;
+use XMPieWsdlClient\XMPie\uProduce\v_12_2\ProductionServices\JobTicket_SSP\parameter;
+use XMPieWsdlClient\XMPie\uProduce\v_12_2\ProductionServices\JobTicket_SSP\RecipientsInfo;
 
 class JobTicketClient extends BaseClient
 {
@@ -676,6 +676,46 @@ class JobTicketClient extends BaseClient
         $result = $Service->SetSplittedJobInfo($Request);
 
         return $result->getSetSplittedJobInfoResult();
+    }
+
+    /**
+     * The data provided by XMPie is in an array/JSON format
+     *
+     * @param $ticketId
+     * @param int $dataSourceID
+     * @return bool|null
+     * @throws SoapFault
+     */
+    public function setJobReportCallbackURL($ticketId, string $url): ?bool
+    {
+        $Request = $this->RequestFabricator->JobTicket_SSP()
+            ->SetJobReportCallbackURL()
+            ->setInTicketID($ticketId)
+            ->setInJobReportCallbackURL($url);
+        $Service = $this->ServiceFabricator->JobTicket_SSP();
+        $result = $Service->SetJobReportCallbackURL($Request);
+
+        return $result->getSetJobReportCallbackURLResult();
+    }
+
+    /**
+     * The data provided by XMPie is XML formatted
+     *
+     * @param $ticketId
+     * @param int $dataSourceID
+     * @return bool|null
+     * @throws SoapFault
+     */
+    public function setJobReportingWebService($ticketId, string $url): ?bool
+    {
+        $Request = $this->RequestFabricator->JobTicket_SSP()
+            ->SetJobReportingWebService()
+            ->setInTicketID($ticketId)
+            ->setInWebServiceURL($url);
+        $Service = $this->ServiceFabricator->JobTicket_SSP();
+        $result = $Service->SetJobReportingWebService($Request);
+
+        return $result->getSetJobReportingWebServiceResult();
     }
 
     /**

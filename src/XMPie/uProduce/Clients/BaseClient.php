@@ -4,8 +4,8 @@ namespace App\XMPie\uProduce\Clients;
 
 use Cake\Core\Configure;
 use XMPieWsdlClient\uProduceFactory;
-use XMPieWsdlClient\XMPie\uProduce\v_12_0_1\Fabricator\RequestFabricator;
-use XMPieWsdlClient\XMPie\uProduce\v_12_0_1\Fabricator\ServiceFabricator;
+use XMPieWsdlClient\XMPie\uProduce\v_12_2\Fabricator\RequestFabricator;
+use XMPieWsdlClient\XMPie\uProduce\v_12_2\Fabricator\ServiceFabricator;
 
 class BaseClient
 {
