@@ -2,6 +2,7 @@
 
 namespace App\XMPie\uProduce\Clients;
 
+use arajcany\PrePressTricks\Utilities\PDFGeometry;
 use SoapFault;
 use XMPieWsdlClient\XMPie\uProduce\v_12_2\ProductionServices\JobTicket_SSP\ArrayOfParameter;
 use XMPieWsdlClient\XMPie\uProduce\v_12_2\ProductionServices\JobTicket_SSP\ArrayOfString;
@@ -680,6 +681,8 @@ class JobTicketClient extends BaseClient
             "RECORD_SET",
         ];
 
+        $outputType = strtoupper($outputType);
+
         if (!in_array($outputType, $allowedTypes)) {
             return false;
         }
@@ -936,6 +939,39 @@ class JobTicketClient extends BaseClient
         $result = $Service->SetJobReportingWebService($Request);
 
         return $result->getSetJobReportingWebServiceResult();
+    }
+
+    /**
+     * Applies the units to the BLEED paramaters
+     *
+     * @param $triggerfile
+     * @return array
+     */
+    public function applyBleedUnitsToTriggerFile($triggerfile): array
+    {
+        $Geo = new PDFGeometry();
+        $units = strtolower($triggerfile['JobTicket']['OutputParameter_BLEED_UNITS']);
+
+        if (is_numeric($triggerfile['JobTicket']['OutputParameter_BLEED_TOP'])) {
+            $triggerfile['JobTicket']['OutputParameter_BLEED_TOP'] = ($Geo->convertUnit($triggerfile['JobTicket']['OutputParameter_BLEED_TOP'], $units, 'pts', 10));
+        }
+        if (is_numeric($triggerfile['JobTicket']['OutputParameter_BLEED_BOTTOM'])) {
+            $triggerfile['JobTicket']['OutputParameter_BLEED_BOTTOM'] = ($Geo->convertUnit($triggerfile['JobTicket']['OutputParameter_BLEED_BOTTOM'], $units, 'pts', 10));
+        }
+        if (is_numeric($triggerfile['JobTicket']['OutputParameter_BLEED_LEFTORINSIDE'])) {
+            $triggerfile['JobTicket']['OutputParameter_BLEED_LEFTORINSIDE'] = ($Geo->convertUnit($triggerfile['JobTicket']['OutputParameter_BLEED_LEFTORINSIDE'], $units, 'pts', 10));
+        }
+        if (is_numeric($triggerfile['JobTicket']['OutputParameter_BLEED_RIGHTOROUTSIDE'])) {
+            $triggerfile['JobTicket']['OutputParameter_BLEED_RIGHTOROUTSIDE'] = ($Geo->convertUnit($triggerfile['JobTicket']['OutputParameter_BLEED_RIGHTOROUTSIDE'], $units, 'pts', 10));
+        }
+        if (is_numeric($triggerfile['JobTicket']['OutputParameter_BLEED_X'])) {
+            $triggerfile['JobTicket']['OutputParameter_BLEED_X'] = ($Geo->convertUnit($triggerfile['JobTicket']['OutputParameter_BLEED_X'], $units, 'pts', 10));
+        }
+        if (is_numeric($triggerfile['JobTicket']['OutputParameter_BLEED_Y'])) {
+            $triggerfile['JobTicket']['OutputParameter_BLEED_Y'] = ($Geo->convertUnit($triggerfile['JobTicket']['OutputParameter_BLEED_Y'], $units, 'pts', 10));
+        }
+
+        return $triggerfile;
     }
 
     /**

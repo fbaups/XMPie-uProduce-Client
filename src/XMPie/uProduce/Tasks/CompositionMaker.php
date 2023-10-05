@@ -17,14 +17,16 @@ class CompositionMaker extends BaseTasks
         if (!is_file($triggerFile)) {
             return false;
         }
+
+        //load and apply generic fixes to the triggerFile
         $triggerFileContents = file_get_contents($triggerFile);
         $triggerFileContents = json_decode($triggerFileContents, JSON_OBJECT_AS_ARRAY);
+        $triggerFileContents = $this->ClientFactory->JobTicketClient()->applyBleedUnitsToTriggerFile($triggerFileContents);
 
         $documentId = $triggerFileContents['Setup']['DocumentID'] ?? null;
         if (!$documentId) {
             return false;
         }
-
 
         $campaignId = $triggerFileContents['Setup']['CampaignID'] ?? null;
         if (!$campaignId) {
@@ -115,18 +117,7 @@ class CompositionMaker extends BaseTasks
         }
 
         if (in_array(strtolower($outputType), ['jpg'])) {
-            $outputResolution = $jobTicketProperties['OutputParameter_OUTPUT_RES'];
-            if (!is_numeric($outputResolution)) {
-                $outputResolution = explode("-", $outputResolution);
-                if (count($outputResolution) === 3) {
-                    $outputResolution = $this->ClientFactory->DocumentClient()->calculateRenderResolution($documentId, $outputResolution[1], $outputResolution[2], $outputResolution[0]);
-                } elseif (count($outputResolution) === 2) {
-                    $outputResolution = $this->ClientFactory->DocumentClient()->calculateRenderResolution($documentId, $outputResolution[1], $outputResolution[1], $outputResolution[0]);
-                } else {
-                    $outputResolution = 72;
-                }
-                $jobTicketProperties['OutputParameter_OUTPUT_RES'] = $outputResolution;
-            }
+            $jobTicketProperties['OutputParameter_OUTPUT_RES'] = $this->ClientFactory->DocumentClient()->reformatOutputResolution($documentId, $jobTicketProperties['OutputParameter_OUTPUT_RES']);
         }
 
         //set output parameters

@@ -143,21 +143,69 @@ class DocumentClient extends BaseClient
         return $result->getGetCampaignResult();
     }
 
-    public function calculateRenderResolution($id, $pixelsWide, $pixelsHigh, $mode = 'fit')
+    /**
+     * The OUTPUT_RES Job Ticket Parameter can be supplied in the following format
+     * - INT e.g. 72
+     * - STRING e.g. fit-256 or fit-256-525 or fill-256 or fill-256-525
+     *
+     * this function looks at document width and height and calculates what resolution it
+     * needs to render at to fit the desired output resolution
+     *
+     * @param int $id
+     * @param int|string $dirtyResolution
+     * @param int $fallbackResolution
+     * @return int
+     * @throws SoapFault
+     */
+    public function reformatOutputResolution(int $id, int|string $dirtyResolution, int $fallbackResolution = 72): int
+    {
+        $fallbackResolution = intval(round($fallbackResolution));
+
+        if (is_numeric($dirtyResolution)) {
+            return intval(round($dirtyResolution));
+        }
+
+        $outputResolution = explode("-", $dirtyResolution);
+        $mode = strtolower($outputResolution[0]);
+        if (!in_array($mode, ['fit', 'fill'])) {
+            return $fallbackResolution;
+        }
+
+        if (count($outputResolution) < 2 || count($outputResolution) > 3) {
+            return $fallbackResolution;
+        }
+
+        $width = $outputResolution[1];
+        $height = $outputResolution[2] ?? $outputResolution[1];
+        return $this->calculateRenderResolution($id, $width, $height, $mode);
+    }
+
+    /**
+     * @param $id
+     * @param $pixelsWide
+     * @param $pixelsHigh
+     * @param string $mode
+     * @return int
+     * @throws SoapFault
+     */
+    public function calculateRenderResolution($id, $pixelsWide, $pixelsHigh, string $mode = 'fit'): int
     {
         $docProperties = $this->getAllProperties($id);
         $docWidthPoints = $docProperties['PageWidth'];
         $docHeightPoints = $docProperties['PageHeight'];
 
-        $docWidthInches = $docWidthPoints / 72;
-        $docHeightInches = $docHeightPoints / 72;
+        $pointsPerInch = 72;
+        $docWidthInches = $docWidthPoints / $pointsPerInch;
+        $docHeightInches = $docHeightPoints / $pointsPerInch;
 
         $widthResolution = $pixelsWide / $docWidthInches;
         $heightResolution = $pixelsHigh / $docHeightInches;
+        $widthResolution = intval(round($widthResolution));
+        $heightResolution = intval(round($heightResolution));
 
         if (strtolower($mode) === 'fit') {
             return min($widthResolution, $heightResolution);
-        } elseif (strtolower($mode) === 'fill   ') {
+        } elseif (strtolower($mode) === 'fill') {
             return max($widthResolution, $heightResolution);
         } else {
             return min($widthResolution, $heightResolution);
