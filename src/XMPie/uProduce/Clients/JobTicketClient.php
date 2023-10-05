@@ -677,6 +677,7 @@ class JobTicketClient extends BaseClient
             "VDX",
             "VIPP",
             "JPG",
+            "PNG",
             "PS",
             "RECORD_SET",
         ];
