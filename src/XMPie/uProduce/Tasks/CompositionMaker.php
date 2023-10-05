@@ -65,6 +65,13 @@ class CompositionMaker extends BaseTasks
             ];
             $dataSourceId = $this->ClientFactory->DataSourceClient()->createXlsxDS($data, $options);
             unlink($saveLocation);
+        } elseif ($triggerFileContents['DataSource']['DataSourceID']) {
+            $validatedId = $this->ClientFactory->DataSourceClient()->validate($triggerFileContents['DataSource']['DataSourceID']);
+            if ($validatedId) {
+                $dataSourceId = $validatedId;
+            } else {
+                $dataSourceId = null;
+            }
         } else {
             $dataSourceId = null;
         }
