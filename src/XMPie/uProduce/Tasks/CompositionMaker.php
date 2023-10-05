@@ -160,6 +160,9 @@ class CompositionMaker extends BaseTasks
         $automaticMerge = boolval($jobTicketProperties['AutomaticMerge']);
         $this->ClientFactory->JobTicketClient()->setAutomaticSubSplitAndMerge($ticketId, $automaticSubSplit, $automaticMerge);
 
+        //debug the ticket
+        //dd($this->ClientFactory->JobTicketClient()->getTicket($ticketId,true));
+
         //produce the job
         $jobIds = $this->ClientFactory->ProductionClient()->submitJobs($ticketId);
 
