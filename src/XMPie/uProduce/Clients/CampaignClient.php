@@ -140,4 +140,36 @@ class CampaignClient extends BaseClient
 
         return $result->getDeleteResult();
     }
+
+    /**
+     * @param $id
+     * @return int|null
+     * @throws SoapFault
+     */
+    public function getPlanId($id): ?int
+    {
+        $Request = $this->RequestFabricator->Campaign_SSP()
+            ->GetPlan()
+            ->setInCampaignID($id);
+        $Service = $this->ServiceFabricator->Campaign_SSP();
+        $result = $Service->GetPlan($Request);
+
+        return $result->getGetPlanResult();
+    }
+
+    /**
+     * @param mixed $id
+     * @return int|null
+     * @throws SoapFault
+     */
+    public function getAccountId(mixed $id): ?int
+    {
+        $Request = $this->RequestFabricator->Campaign_SSP()
+            ->GetAccount()
+            ->setInCampaignID($id);
+        $Service = $this->ServiceFabricator->Campaign_SSP();
+        $result = $Service->GetAccount($Request);
+
+        return $result->getGetAccountResult();
+    }
 }

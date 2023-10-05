@@ -4,20 +4,73 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aed11122cba9b6d308000f46d67eb8a6",
+    "content-hash": "781a58997d46f7d83e26ea1d0cee0151",
     "packages": [
         {
-            "name": "cakephp/chronos",
-            "version": "2.4.0",
+            "name": "arajcany/tool-box",
+            "version": "2.1.18",
             "source": {
                 "type": "git",
-                "url": "https://github.com/cakephp/chronos.git",
-                "reference": "9c7e438cba4eed1796ec19ad3874defa9eb9aeac"
+                "url": "https://github.com/arajcany/ToolBox.git",
+                "reference": "a3f9398e1e93379274e820bfc77a0cfd6bfcfc34"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/chronos/zipball/9c7e438cba4eed1796ec19ad3874defa9eb9aeac",
-                "reference": "9c7e438cba4eed1796ec19ad3874defa9eb9aeac",
+                "url": "https://api.github.com/repos/arajcany/ToolBox/zipball/a3f9398e1e93379274e820bfc77a0cfd6bfcfc34",
+                "reference": "a3f9398e1e93379274e820bfc77a0cfd6bfcfc34",
+                "shasum": ""
+            },
+            "require": {
+                "cakephp/i18n": ">=3.6.0,<5.0.0",
+                "cakephp/utility": ">=3.6.0,<5.0.0",
+                "ext-json": "*",
+                "ext-zip": "*",
+                "league/climate": "^3.8",
+                "league/flysystem": "^3.0",
+                "php": ">=8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*",
+                "symfony/var-dumper": "*"
+            },
+            "type": "package",
+            "autoload": {
+                "psr-4": {
+                    "arajcany\\ToolBox\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andrew Rajcany",
+                    "email": "a.rajcany@mac.com"
+                }
+            ],
+            "description": "A collection of Classes for CakePHP Projects",
+            "keywords": [
+                "tools"
+            ],
+            "support": {
+                "issues": "https://github.com/arajcany/ToolBox/issues",
+                "source": "https://github.com/arajcany/ToolBox/tree/2.1.18"
+            },
+            "time": "2023-05-16T03:55:53+00:00"
+        },
+        {
+            "name": "cakephp/chronos",
+            "version": "2.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cakephp/chronos.git",
+                "reference": "dd583900b26971e84d56c482d6c5fc16961bd103"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cakephp/chronos/zipball/dd583900b26971e84d56c482d6c5fc16961bd103",
+                "reference": "dd583900b26971e84d56c482d6c5fc16961bd103",
                 "shasum": ""
             },
             "require": {
@@ -62,7 +115,7 @@
                 "issues": "https://github.com/cakephp/chronos/issues",
                 "source": "https://github.com/cakephp/chronos"
             },
-            "time": "2023-08-06T22:54:27+00:00"
+            "time": "2023-09-12T03:12:29+00:00"
         },
         {
             "name": "cakephp/core",
@@ -123,6 +176,69 @@
                 "source": "https://github.com/cakephp/core"
             },
             "time": "2023-08-17T11:42:28+00:00"
+        },
+        {
+            "name": "cakephp/i18n",
+            "version": "4.4.17",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cakephp/i18n.git",
+                "reference": "5c31b8d8bc9d5561001afd3b9cea6adaefc1765b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cakephp/i18n/zipball/5c31b8d8bc9d5561001afd3b9cea6adaefc1765b",
+                "reference": "5c31b8d8bc9d5561001afd3b9cea6adaefc1765b",
+                "shasum": ""
+            },
+            "require": {
+                "cakephp/chronos": "^2.0.0",
+                "cakephp/core": "^4.0",
+                "ext-intl": "*",
+                "php": ">=7.4.0"
+            },
+            "suggest": {
+                "cakephp/cache": "Require this if you want automatic caching of translators"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "functions.php"
+                ],
+                "psr-4": {
+                    "Cake\\I18n\\": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "CakePHP Community",
+                    "homepage": "https://github.com/cakephp/i18n/graphs/contributors"
+                }
+            ],
+            "description": "CakePHP Internationalization library with support for messages translation and dates and numbers localization",
+            "homepage": "https://cakephp.org",
+            "keywords": [
+                "cakephp",
+                "date",
+                "i18n",
+                "internationalisation",
+                "internationalization",
+                "localisation",
+                "localization",
+                "number",
+                "translation"
+            ],
+            "support": {
+                "forum": "https://stackoverflow.com/tags/cakephp",
+                "irc": "irc://irc.freenode.org/cakephp",
+                "issues": "https://github.com/cakephp/cakephp/issues",
+                "source": "https://github.com/cakephp/i18n"
+            },
+            "time": "2023-08-09T10:03:45+00:00"
         },
         {
             "name": "cakephp/utility",
@@ -297,6 +413,71 @@
             "time": "2023-09-08T06:32:16+00:00"
         },
         {
+            "name": "league/climate",
+            "version": "3.8.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/climate.git",
+                "reference": "a785a3ac8f584eed4abd45e4e16fe64c46659a28"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/climate/zipball/a785a3ac8f584eed4abd45e4e16fe64c46659a28",
+                "reference": "a785a3ac8f584eed4abd45e4e16fe64c46659a28",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3 || ^8.0",
+                "psr/log": "^1.0 || ^2.0 || ^3.0",
+                "seld/cli-prompt": "^1.0"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "^1.6.10",
+                "mockery/mockery": "^1.4.2",
+                "phpunit/phpunit": "^9.5.10"
+            },
+            "suggest": {
+                "ext-mbstring": "If ext-mbstring is not available you MUST install symfony/polyfill-mbstring"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "League\\CLImate\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Joe Tannenbaum",
+                    "email": "hey@joe.codes",
+                    "homepage": "http://joe.codes/",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Craig Duncan",
+                    "email": "git@duncanc.co.uk",
+                    "homepage": "https://github.com/duncan3dc",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP's best friend for the terminal. CLImate allows you to easily output colored text, special formats, and more.",
+            "keywords": [
+                "cli",
+                "colors",
+                "command",
+                "php",
+                "terminal"
+            ],
+            "support": {
+                "issues": "https://github.com/thephpleague/climate/issues",
+                "source": "https://github.com/thephpleague/climate/tree/3.8.2"
+            },
+            "time": "2022-06-18T14:42:08+00:00"
+        },
+        {
             "name": "league/csv",
             "version": "9.10.0",
             "source": {
@@ -383,6 +564,212 @@
                 }
             ],
             "time": "2023-08-04T15:12:48+00:00"
+        },
+        {
+            "name": "league/flysystem",
+            "version": "3.16.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/flysystem.git",
+                "reference": "4fdf372ca6b63c6e281b1c01a624349ccb757729"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/4fdf372ca6b63c6e281b1c01a624349ccb757729",
+                "reference": "4fdf372ca6b63c6e281b1c01a624349ccb757729",
+                "shasum": ""
+            },
+            "require": {
+                "league/flysystem-local": "^3.0.0",
+                "league/mime-type-detection": "^1.0.0",
+                "php": "^8.0.2"
+            },
+            "conflict": {
+                "async-aws/core": "<1.19.0",
+                "async-aws/s3": "<1.14.0",
+                "aws/aws-sdk-php": "3.209.31 || 3.210.0",
+                "guzzlehttp/guzzle": "<7.0",
+                "guzzlehttp/ringphp": "<1.1.1",
+                "phpseclib/phpseclib": "3.0.15",
+                "symfony/http-client": "<5.2"
+            },
+            "require-dev": {
+                "async-aws/s3": "^1.5",
+                "async-aws/simple-s3": "^1.1",
+                "aws/aws-sdk-php": "^3.220.0",
+                "composer/semver": "^3.0",
+                "ext-fileinfo": "*",
+                "ext-ftp": "*",
+                "ext-zip": "*",
+                "friendsofphp/php-cs-fixer": "^3.5",
+                "google/cloud-storage": "^1.23",
+                "microsoft/azure-storage-blob": "^1.1",
+                "phpseclib/phpseclib": "^3.0.14",
+                "phpstan/phpstan": "^0.12.26",
+                "phpunit/phpunit": "^9.5.11|^10.0",
+                "sabre/dav": "^4.3.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "League\\Flysystem\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frank de Jonge",
+                    "email": "info@frankdejonge.nl"
+                }
+            ],
+            "description": "File storage abstraction for PHP",
+            "keywords": [
+                "WebDAV",
+                "aws",
+                "cloud",
+                "file",
+                "files",
+                "filesystem",
+                "filesystems",
+                "ftp",
+                "s3",
+                "sftp",
+                "storage"
+            ],
+            "support": {
+                "issues": "https://github.com/thephpleague/flysystem/issues",
+                "source": "https://github.com/thephpleague/flysystem/tree/3.16.0"
+            },
+            "funding": [
+                {
+                    "url": "https://ecologi.com/frankdejonge",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/frankdejonge",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-09-07T19:22:17+00:00"
+        },
+        {
+            "name": "league/flysystem-local",
+            "version": "3.16.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/flysystem-local.git",
+                "reference": "ec7383f25642e6fd4bb0c9554fc2311245391781"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/flysystem-local/zipball/ec7383f25642e6fd4bb0c9554fc2311245391781",
+                "reference": "ec7383f25642e6fd4bb0c9554fc2311245391781",
+                "shasum": ""
+            },
+            "require": {
+                "ext-fileinfo": "*",
+                "league/flysystem": "^3.0.0",
+                "league/mime-type-detection": "^1.0.0",
+                "php": "^8.0.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "League\\Flysystem\\Local\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frank de Jonge",
+                    "email": "info@frankdejonge.nl"
+                }
+            ],
+            "description": "Local filesystem adapter for Flysystem.",
+            "keywords": [
+                "Flysystem",
+                "file",
+                "files",
+                "filesystem",
+                "local"
+            ],
+            "support": {
+                "issues": "https://github.com/thephpleague/flysystem-local/issues",
+                "source": "https://github.com/thephpleague/flysystem-local/tree/3.16.0"
+            },
+            "funding": [
+                {
+                    "url": "https://ecologi.com/frankdejonge",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/frankdejonge",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-08-30T10:23:59+00:00"
+        },
+        {
+            "name": "league/mime-type-detection",
+            "version": "1.13.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/mime-type-detection.git",
+                "reference": "a6dfb1194a2946fcdc1f38219445234f65b35c96"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/mime-type-detection/zipball/a6dfb1194a2946fcdc1f38219445234f65b35c96",
+                "reference": "a6dfb1194a2946fcdc1f38219445234f65b35c96",
+                "shasum": ""
+            },
+            "require": {
+                "ext-fileinfo": "*",
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.2",
+                "phpstan/phpstan": "^0.12.68",
+                "phpunit/phpunit": "^8.5.8 || ^9.3 || ^10.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "League\\MimeTypeDetection\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frank de Jonge",
+                    "email": "info@frankdejonge.nl"
+                }
+            ],
+            "description": "Mime-type detection for Flysystem",
+            "support": {
+                "issues": "https://github.com/thephpleague/mime-type-detection/issues",
+                "source": "https://github.com/thephpleague/mime-type-detection/tree/1.13.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/frankdejonge",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/league/flysystem",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2023-08-05T12:09:49+00:00"
         },
         {
             "name": "maennchen/zipstream-php",
@@ -838,6 +1225,56 @@
             "time": "2023-04-04T09:54:51+00:00"
         },
         {
+            "name": "psr/log",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/log.git",
+                "reference": "fe5ea303b0887d5caefd3d431c3e61ad47037001"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/fe5ea303b0887d5caefd3d431c3e61ad47037001",
+                "reference": "fe5ea303b0887d5caefd3d431c3e61ad47037001",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Log\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for logging libraries",
+            "homepage": "https://github.com/php-fig/log",
+            "keywords": [
+                "log",
+                "psr",
+                "psr-3"
+            ],
+            "support": {
+                "source": "https://github.com/php-fig/log/tree/3.0.0"
+            },
+            "time": "2021-07-14T16:46:02+00:00"
+        },
+        {
             "name": "psr/simple-cache",
             "version": "3.0.0",
             "source": {
@@ -887,6 +1324,61 @@
                 "source": "https://github.com/php-fig/simple-cache/tree/3.0.0"
             },
             "time": "2021-10-29T13:26:27+00:00"
+        },
+        {
+            "name": "seld/cli-prompt",
+            "version": "1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Seldaek/cli-prompt.git",
+                "reference": "b8dfcf02094b8c03b40322c229493bb2884423c5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Seldaek/cli-prompt/zipball/b8dfcf02094b8c03b40322c229493bb2884423c5",
+                "reference": "b8dfcf02094b8c03b40322c229493bb2884423c5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^0.12.63"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Seld\\CliPrompt\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be"
+                }
+            ],
+            "description": "Allows you to prompt for user input on the command line, and optionally hide the characters they type",
+            "keywords": [
+                "cli",
+                "console",
+                "hidden",
+                "input",
+                "prompt"
+            ],
+            "support": {
+                "issues": "https://github.com/Seldaek/cli-prompt/issues",
+                "source": "https://github.com/Seldaek/cli-prompt/tree/1.0.4"
+            },
+            "time": "2020-12-15T21:32:01+00:00"
         }
     ],
     "packages-dev": [

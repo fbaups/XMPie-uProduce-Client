@@ -1,0 +1,13 @@
+{
+    "remote_update_url": null,
+    "remote_update_unc": "\\\\192.168.0.135\\code.noteworthy.name\\BoilerplateComposer",
+    "remote_update_sftp_host": null,
+    "remote_update_sftp_port": null,
+    "remote_update_sftp_username": null,
+    "remote_update_sftp_password": null,
+    "remote_update_sftp_timeout": null,
+    "remote_update_sftp_path": null,
+    "remote_update_b2_key_id": null,
+    "remote_update_b2_key": null,
+    "remote_update_b2_bucket": null
+}

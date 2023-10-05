@@ -12,7 +12,9 @@
     "cakephp/chronos": "^2.3",
     "phpoffice/phpspreadsheet": "^1.28",
     "league/csv": "^9.9",
-    "ext-dom": "*"
+    "ext-dom": "*",
+    "league/climate": "^3.8",
+    "arajcany/tool-box": "^2.1"
   },
   "require-dev": {
     "phpunit/phpunit": "*",

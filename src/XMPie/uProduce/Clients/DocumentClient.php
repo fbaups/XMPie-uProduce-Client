@@ -126,4 +126,41 @@ class DocumentClient extends BaseClient
 
         return $result->getDeleteResult();
     }
+
+    /**
+     * @param $id
+     * @return int|null
+     * @throws SoapFault
+     */
+    public function getCampaignId($id): ?int
+    {
+        $Request = $this->RequestFabricator->Document_SSP()
+            ->GetCampaign()
+            ->setInDocumentID($id);
+        $Service = $this->ServiceFabricator->Document_SSP();
+        $result = $Service->GetCampaign($Request);
+
+        return $result->getGetCampaignResult();
+    }
+
+    public function calculateRenderResolution($id, $pixelsWide, $pixelsHigh, $mode = 'fit')
+    {
+        $docProperties = $this->getAllProperties($id);
+        $docWidthPoints = $docProperties['PageWidth'];
+        $docHeightPoints = $docProperties['PageHeight'];
+
+        $docWidthInches = $docWidthPoints / 72;
+        $docHeightInches = $docHeightPoints / 72;
+
+        $widthResolution = $pixelsWide / $docWidthInches;
+        $heightResolution = $pixelsHigh / $docHeightInches;
+
+        if (strtolower($mode) === 'fit') {
+            return min($widthResolution, $heightResolution);
+        } elseif (strtolower($mode) === 'fill   ') {
+            return max($widthResolution, $heightResolution);
+        } else {
+            return min($widthResolution, $heightResolution);
+        }
+    }
 }

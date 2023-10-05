@@ -77,10 +77,10 @@ class ProductionClient extends BaseClient
             $to = -1;
         }
 
-        if ($type === 'batches') {
-            $type = 1;
-        } elseif ($type === 'records') {
+        if (strtolower($type) === 'records') {
             $type = 0;
+        } elseif (strtolower($type) === 'batches') {
+            $type = 1;
         }
 
         $JobTicketClient->setSplittedJobInfo($ticketId, $count, $type, $from, $to, false);

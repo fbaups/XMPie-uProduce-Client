@@ -281,7 +281,6 @@ class DataSourceClient extends BaseClient
         $options['type'] = 'XLS';
         $options['name'] = "{$date} [{$rndShort}] - {$options['fileName']}";
         $options['connectionString'] = '';
-        $options['additionalInfo'] = '';
 
         //make $options ready for the Generic method
         $options['additionalInfo'] = $options['fileName'];

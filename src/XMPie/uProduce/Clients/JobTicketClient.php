@@ -6,6 +6,7 @@ use SoapFault;
 use XMPieWsdlClient\XMPie\uProduce\v_12_2\ProductionServices\JobTicket_SSP\ArrayOfParameter;
 use XMPieWsdlClient\XMPie\uProduce\v_12_2\ProductionServices\JobTicket_SSP\ArrayOfString;
 use XMPieWsdlClient\XMPie\uProduce\v_12_2\ProductionServices\JobTicket_SSP\Connection;
+use XMPieWsdlClient\XMPie\uProduce\v_12_2\ProductionServices\JobTicket_SSP\Customization;
 use XMPieWsdlClient\XMPie\uProduce\v_12_2\ProductionServices\JobTicket_SSP\parameter;
 use XMPieWsdlClient\XMPie\uProduce\v_12_2\ProductionServices\JobTicket_SSP\RecipientsInfo;
 
@@ -169,6 +170,99 @@ class JobTicketClient extends BaseClient
     }
 
     /**
+     * Looks at all the options and figure out how to create a RI
+     *
+     * @param $ticketId
+     * @param $options
+     * @return bool
+     * @throws SoapFault
+     */
+    public function setRIs($ticketId, $options): bool
+    {
+        /*
+         * Order of precedence:
+         *  - If a DataSource ID has been provided use the DataSource
+         *  - If DataSource ID not present assume that VARIABLE/ADOR customisations will be used
+         *
+         * When using a DataSource ID:
+         *  - Use Query if present
+         *  - Fallback to Plan Filter Name if present
+         *  - Fallback to Table Name if present
+         *  - Fallback to selecting the first compatible table name
+         *  - DataSource is incompatiblee so assume that VARIABLE/ADOR customisations will be used
+         */
+
+        /*
+         * ====m_Filter====
+         * The name of the Recipient filter, to be specified as follows:
+         * Type                 Filter Name
+         * Recipient ID         The name of the Data Source table containing the record of the recipient indicated by the specified ID. This ID is provided using the SetRIOnDemandInfo method.
+         * Query                The user-defined SQL query to be used to return the Recipient List. For example: "SELECT * FROM MyTableName".
+         * Plan                 Filter Name The name of the filter as it is defined in the Plan file.
+         * Table name           The name of the Data Source table to be used in its entirety as the Recipient List.
+         * No Recipient List    An empty string.
+         *
+         * ====m_FilterType====
+         * The type of Recipient filter. Specify one of the following values:
+         * 0 RecipientID
+         * 1 Query
+         * 2 Plan Filter Name
+         * 3 Table name
+         * 4 No Recipient List.Note NoteThis is relevant when all ADOR Objects are customized with fixed values of a single recipient (for example, when creating a business card), so there is no need to extract a Recipient List from a Data Source.
+         */
+
+        $defaultOptions = [
+            'dataSourceId' => null,
+            'query' => null,
+            'planFilterName' => null,
+            'tableName' => null,
+            'startRecord' => null,
+            'endRecord' => null,
+        ];
+
+        $options = array_merge($defaultOptions, $options);
+
+        if ($options['dataSourceId']) {
+            $query = $options['query'];
+            $planFilterName = $options['planFilterName'];
+            $tableName = $this->getValidTableNameForDataSource($options['dataSourceId'], $options['tableName']);;
+
+            if ($query) {
+                $filter = $query;
+                $filterType = 1;
+            } elseif ($planFilterName) {
+                $filter = $planFilterName;
+                $filterType = 2;
+            } elseif ($tableName) {
+                $filter = $tableName;
+                $filterType = 3;
+            } else {
+                $filter = '';
+                $filterType = 4;
+            }
+        } else {
+            $filter = '';
+            $filterType = 4;
+        }
+
+        $RI = $this->createRecipientsInfo($filter, $filterType);
+
+        if (in_array($filterType, [1, 2, 3])) {
+            $this->setDataSourceID($ticketId, $options['dataSourceId']);
+            $this->removeAllRIs($ticketId);
+            $this->setRIRange($ticketId, $options['startRecord'], $options['endRecord']);
+            $this->addRIByID($ticketId, $options['dataSourceId'], $RI);
+            $this->removeAllSchemaDataSources($ticketId);
+        } elseif (in_array($filterType, [4])) {
+            $this->addRI($ticketId, $RI);
+        } else {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * @param $ticketId
      * @return int|null
      * @throws SoapFault
@@ -257,26 +351,48 @@ class JobTicketClient extends BaseClient
     }
 
     /**
-     * @param $ticketId
+     * Forcibly get a valid table name for then Plan & DataSourceID combination.
+     * Will validate the given table name (if given) or use the first compatible table.
+     * On failure will return false
+     *
      * @param int $dataSourceId
-     * @param string|null $dataSourceTableName //if none provided first compatible table will be used
+     * @param string|null $dataSourceTableName
+     * @return string|false
+     * @throws SoapFault
+     */
+    public function getValidTableNameForDataSource(int $dataSourceId, string $dataSourceTableName = null): bool|string
+    {
+        $DataSourceClient = new DataSourceClient();
+        $compatibleTables = $DataSourceClient->getDataSourceCompatibleTables($dataSourceId);
+
+        if (in_array($dataSourceTableName, $compatibleTables)) {
+            return $dataSourceTableName;
+        }
+
+        if (in_array('recipients', $compatibleTables)) {
+            return 'recipients';
+        }
+
+        if (in_array('Recipients', $compatibleTables)) {
+            return 'Recipients';
+        }
+
+        if (isset($compatibleTables[0])) {
+            return $compatibleTables[0];
+        }
+
+        return false;
+    }
+
+    /**
+     * @param int $ticketId
+     * @param int $dataSourceId
+     * @param RecipientsInfo $recipientsInfo
      * @return bool|null
      * @throws SoapFault
      */
-    public function addRIByDataSourceIdAndTableName($ticketId, int $dataSourceId, string $dataSourceTableName = null): ?bool
+    public function addRIByID(int $ticketId, int $dataSourceId, RecipientsInfo $recipientsInfo): ?bool
     {
-        if (empty($dataSourceTableName)) {
-            $DataSourceClient = new DataSourceClient();
-            $compatibleTables = $DataSourceClient->getDataSourceCompatibleTables($dataSourceId);
-            if (isset($compatibleTables[0])) {
-                $dataSourceTableName = $compatibleTables[0];
-            } else {
-                $dataSourceTableName = 'default'; //will probably cause a fault as what is the likelihood of a table called 'default'
-            }
-        }
-
-        $recipientsInfo = $this->createRecipientsInfo($dataSourceTableName, 3);
-
         $Request = $this->RequestFabricator->JobTicket_SSP()
             ->AddRIByID()
             ->setInTicketID($ticketId)
@@ -292,13 +408,16 @@ class JobTicketClient extends BaseClient
      *  No Recipients Information list e.g. when an ADOR Objects or Variables are customized with fixed values for a single recipient
      *
      * @param $ticketId
+     * @param RecipientsInfo $recipientsInfo
+     * @param Connection|null $connection
      * @return bool|null
      * @throws SoapFault
      */
-    public function addRINone($ticketId,): ?bool
+    public function addRI($ticketId, RecipientsInfo $recipientsInfo, Connection $connection = null): ?bool
     {
-        $connection = (new Connection())->setM_Type('NONE')->setM_ConnectionString('')->setM_AdditionalInfo('');
-        $recipientsInfo = $this->createRecipientsInfo('', 4);
+        if (empty($connection)) {
+            $connection = (new Connection())->setM_Type('NONE')->setM_ConnectionString('')->setM_AdditionalInfo('');
+        }
 
         $Request = $this->RequestFabricator->JobTicket_SSP()
             ->AddRI()
@@ -325,6 +444,79 @@ class JobTicketClient extends BaseClient
         $result = $Service->RemoveAllSchemaDataSources($Request);
 
         return $result->getRemoveAllSchemaDataSourcesResult();
+    }
+
+    /**
+     * @param $ticketId
+     * @param $planId
+     * @param $variables
+     * @return array
+     * @throws SoapFault
+     */
+    public function setCustomisationVariables($ticketId, $planId, $variables): array
+    {
+        $planVariables = (new PlanClient())->getVariables($planId);
+        $results = [];
+        foreach ($variables as $k => $v) {
+            if ($v === null) {
+                continue;
+            }
+            if ($planVariables[$k]['extended_type'] == 'NUMBER') {
+                $v = intval($v);
+                $expressionType = false;
+            } else {
+                $expressionType = true;
+            }
+
+            $customisation = (new Customization())
+                ->setM_Name($k)
+                ->setM_Expression($v)
+                ->setM_IOType('R')
+                ->setM_Type('VAR');
+
+            $Request = $this->RequestFabricator->JobTicket_SSP()
+                ->SetCustomization()
+                ->setInTicketID($ticketId)
+                ->setInCustomization($customisation)
+                ->setExpressionAsValue($expressionType);
+            $Service = $this->ServiceFabricator->JobTicket_SSP();
+            $results[] = $Service->SetCustomization($Request)->getSetCustomizationResult();
+        }
+
+        return $results;
+    }
+
+    /**
+     * @param $ticketId
+     * @param $planId
+     * @param $adors
+     * @return array
+     * @throws SoapFault
+     */
+    public function setCustomisationAdors($ticketId, $planId, $adors): array
+    {
+        $planAdors = (new PlanClient())->getADORs($planId);
+        $results = [];
+        foreach ($adors as $k => $v) {
+            if ($v === null) {
+                continue;
+            }
+            $customisation = (new Customization())
+                ->setM_Name($k)
+                ->setM_Expression($v)
+                ->setM_IOType('R')
+                ->setM_Type('ADOR');
+
+            $Request = $this->RequestFabricator->JobTicket_SSP()
+                ->SetCustomization()
+                ->setInTicketID($ticketId)
+                ->setInCustomization($customisation)
+                ->setExpressionAsValue(true);
+            $Service = $this->ServiceFabricator->JobTicket_SSP();
+            $results[] = $Service->SetCustomization($Request)->getSetCustomizationResult();
+        }
+
+        return $results;
     }
 
     /**
@@ -654,16 +846,44 @@ class JobTicketClient extends BaseClient
      * Set how the job is split into batches
      *
      * @param $ticketId
-     * @param int $splitNumber the number of batches or records
-     * @param int $splitType 0 defines the number of records in each batch. 1 defines the number of batches in this job.
+     * @param int|string $splitNumber the number of batches or records
+     * @param int|string $splitType 0 defines the number of records in each batch. 1 defines the number of batches in this job.
      * @param int $origFrom
      * @param int $origTo
      * @param bool $mergeOutput
      * @return bool|null
      * @throws SoapFault
      */
-    public function setSplittedJobInfo($ticketId, int $splitNumber, int $splitType, int $origFrom, int $origTo, bool $mergeOutput): ?bool
+    public function setSplittedJobInfo($ticketId, int|string $splitNumber, int|string $splitType, int $origFrom = null, int $origTo = null, bool $mergeOutput = false): ?bool
     {
+        $splitNumber = intval($splitNumber);
+
+        if (!is_numeric($splitType)) {
+            if (strtolower($splitType) === 'records') {
+                $splitType = 0;
+            } else {
+                $splitType = 1;
+            }
+        } else {
+            $splitType = intval($splitType);
+        }
+
+        if (empty($origFrom)) {
+            $origFrom = $this->getRIFrom($ticketId);
+            if ($origFrom === 0) {
+                $origFrom = 1;
+            }
+        }
+
+        if (empty($origTo)) {
+            $origTo = $this->getRITo($ticketId);
+            if ($origTo === 0) {
+                $origTo = -1;
+            }
+        }
+
+        //dump($ticketId, $splitNumber, $splitType, $origFrom, $origTo, $mergeOutput);
+
         $Request = $this->RequestFabricator->JobTicket_SSP()
             ->SetSplittedJobInfo()
             ->setInTicketID($ticketId)
