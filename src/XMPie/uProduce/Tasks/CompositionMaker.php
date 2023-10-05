@@ -64,6 +64,7 @@ class CompositionMaker extends BaseTasks
                 'fileName' => "recipients-{$rnd}.xlsx",
             ];
             $dataSourceId = $this->ClientFactory->DataSourceClient()->createXlsxDS($data, $options);
+            unlink($saveLocation);
         } else {
             $dataSourceId = null;
         }
