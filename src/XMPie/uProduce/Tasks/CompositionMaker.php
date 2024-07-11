@@ -80,7 +80,7 @@ class CompositionMaker extends BaseTasks
 
         $recipients = $triggerFileContents['Recipients'] ?? false;
         $rnd = Security::purl(6);
-        $saveLocation = TMP . "recipients-{$rnd}.xlsx";
+        $saveLocation = $this->tmpDir . "recipients-{$rnd}.xlsx";
         if ($recipients) {
             $this->ClientFactory->DataSourceClient()->convertRawDataToDataFileForPlan($recipients, $planId, $saveLocation);
             $data = file_get_contents($saveLocation);

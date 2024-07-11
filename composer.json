@@ -1,21 +1,20 @@
 {
-  "name": "arajcany/boilerplate-composer",
-  "description": "Clone as a starting point for Projects/Libraries.",
+  "name": "arajcany/xmpie-uproduce-client",
+  "description": "Simple way to interact with the uProduce WSDL API",
   "type": "project",
   "license": "MIT",
   "require": {
     "ext-json": "*",
     "ext-soap": "*",
     "ext-dom": "*",
-    "php": ">=8.0",
-    "fxaps/xmpie-wsdl-wrapper-uproduce": "12.*",
-    "cakephp/core": "^4.4",
-    "cakephp/chronos": "^2.3",
-    "phpoffice/phpspreadsheet": "^1.28",
+    "php": ">=8.2",
+    "cakephp/core": "^5.0.1",
+    "cakephp/chronos": "^3.0.4",
+    "phpoffice/phpspreadsheet": "^2.1",
     "league/csv": "^9.9",
-    "league/climate": "^3.8",
+    "fxaps/xmpie-wsdl-wrapper-uproduce": "12.*",
     "arajcany/tool-box": "^2.1",
-    "arajcany/pre-press-tricks": "^1.1"
+    "arajcany/pre-press-tricks": "^1.3"
   },
   "require-dev": {
     "phpunit/phpunit": "*",

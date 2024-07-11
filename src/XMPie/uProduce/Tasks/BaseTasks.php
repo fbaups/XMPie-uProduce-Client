@@ -7,6 +7,7 @@ use App\XMPie\uProduce\Clients\ClientFactory;
 class BaseTasks
 {
     protected ClientFactory $ClientFactory;
+    protected string $tmpDir;
 
     public function __construct(array $xmpOptions, array $soapOptions, array $config)
     {
@@ -31,6 +32,12 @@ class BaseTasks
 
 
         $this->ClientFactory = new ClientFactory($xmpOptions, $soapOptions, $configDefault);
+
+        $this->tmpDir = getcwd() . "/";
+        if (defined('TMP')) {
+            $this->tmpDir = TMP;
+        }
+
     }
 
 }

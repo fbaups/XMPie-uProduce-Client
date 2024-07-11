@@ -2,20 +2,17 @@
 
 namespace App\InputTriggers;
 
-use App\CliLogger;
 use App\XMPie\uProduce\Clients\ClientFactory;
 use arajcany\ToolBox\Utility\TextFormatter;
 
 class BaseTrigger
 {
-    public CliLogger $io;
     protected string $classDirectory;
     protected ClientFactory $uProduceClientFactory;
 
     public function __construct()
     {
         $this->classDirectory = TextFormatter::makeDirectoryTrailingSmartSlash(dirname(__FILE__));
-        $this->io = new CliLogger();
     }
 
     public function loadFactory($xmpOptions, $soapOptions, $config): void
