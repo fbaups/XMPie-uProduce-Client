@@ -3,8 +3,8 @@
 namespace App\XMPie\uProduce\Clients;
 
 use SoapFault;
-use XMPieWsdlClient\XMPie\uProduce\v_12_2\ProductionServices\Production_SSP\ArrayOfProperty;
-use XMPieWsdlClient\XMPie\uProduce\v_12_2\ProductionServices\Production_SSP\ArrayOfString;
+use XMPieWsdlClient\XMPie\uProduce\v_13_2\ProductionServices\Production_SSP\ArrayOfProperty;
+use XMPieWsdlClient\XMPie\uProduce\v_13_2\ProductionServices\Production_SSP\ArrayOfString;
 
 class ProductionClient extends BaseClient
 {

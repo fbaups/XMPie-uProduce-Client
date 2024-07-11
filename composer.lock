@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cb62db6d5d9273ceffe859ae7b23c7dc",
+    "content-hash": "a5cae262c41475bdf1128bdcac0bc1a3",
     "packages": [
         {
             "name": "arajcany/pre-press-tricks",
@@ -361,16 +361,16 @@
         },
         {
             "name": "fxaps/xmpie-wsdl-wrapper-uproduce",
-            "version": "12.2.0.1",
+            "version": "13.2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fxaps/XMPie-WSDL-Wrapper-uProduce.git",
-                "reference": "75690fb4d896fb31f1460f8564e858704180989b"
+                "reference": "2199c2aca25898fbacc3e15c9501eba3b9794aa6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fxaps/XMPie-WSDL-Wrapper-uProduce/zipball/75690fb4d896fb31f1460f8564e858704180989b",
-                "reference": "75690fb4d896fb31f1460f8564e858704180989b",
+                "url": "https://api.github.com/repos/fxaps/XMPie-WSDL-Wrapper-uProduce/zipball/2199c2aca25898fbacc3e15c9501eba3b9794aa6",
+                "reference": "2199c2aca25898fbacc3e15c9501eba3b9794aa6",
                 "shasum": ""
             },
             "require": {
@@ -379,7 +379,7 @@
             },
             "require-dev": {
                 "ext-json": "*",
-                "phpunit/phpunit": "~8.5.0 || ^9.3"
+                "phpunit/phpunit": "*"
             },
             "type": "library",
             "autoload": {
@@ -407,9 +407,9 @@
             ],
             "support": {
                 "issues": "https://github.com/fxaps/XMPie-WSDL-Wrapper-uProduce/issues",
-                "source": "https://github.com/fxaps/XMPie-WSDL-Wrapper-uProduce/tree/12.2.0.1"
+                "source": "https://github.com/fxaps/XMPie-WSDL-Wrapper-uProduce/tree/13.2.0.1"
             },
-            "time": "2023-09-08T06:32:16+00:00"
+            "time": "2024-07-11T08:15:36+00:00"
         },
         {
             "name": "guzzlehttp/psr7",

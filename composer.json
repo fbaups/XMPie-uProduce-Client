@@ -12,7 +12,7 @@
     "cakephp/chronos": "^3.0.4",
     "phpoffice/phpspreadsheet": "^2.1",
     "league/csv": "^9.9",
-    "fxaps/xmpie-wsdl-wrapper-uproduce": "12.*",
+    "fxaps/xmpie-wsdl-wrapper-uproduce": "13.*",
     "arajcany/tool-box": "^2.1",
     "arajcany/pre-press-tricks": "^1.3"
   },

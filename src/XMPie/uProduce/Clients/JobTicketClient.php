@@ -4,12 +4,12 @@ namespace App\XMPie\uProduce\Clients;
 
 use arajcany\PrePressTricks\Utilities\PDFGeometry;
 use SoapFault;
-use XMPieWsdlClient\XMPie\uProduce\v_12_2\ProductionServices\JobTicket_SSP\ArrayOfParameter;
-use XMPieWsdlClient\XMPie\uProduce\v_12_2\ProductionServices\JobTicket_SSP\ArrayOfString;
-use XMPieWsdlClient\XMPie\uProduce\v_12_2\ProductionServices\JobTicket_SSP\Connection;
-use XMPieWsdlClient\XMPie\uProduce\v_12_2\ProductionServices\JobTicket_SSP\Customization;
-use XMPieWsdlClient\XMPie\uProduce\v_12_2\ProductionServices\JobTicket_SSP\parameter;
-use XMPieWsdlClient\XMPie\uProduce\v_12_2\ProductionServices\JobTicket_SSP\RecipientsInfo;
+use XMPieWsdlClient\XMPie\uProduce\v_13_2\ProductionServices\JobTicket_SSP\ArrayOfParameter;
+use XMPieWsdlClient\XMPie\uProduce\v_13_2\ProductionServices\JobTicket_SSP\ArrayOfString;
+use XMPieWsdlClient\XMPie\uProduce\v_13_2\ProductionServices\JobTicket_SSP\Connection;
+use XMPieWsdlClient\XMPie\uProduce\v_13_2\ProductionServices\JobTicket_SSP\Customization;
+use XMPieWsdlClient\XMPie\uProduce\v_13_2\ProductionServices\JobTicket_SSP\parameter;
+use XMPieWsdlClient\XMPie\uProduce\v_13_2\ProductionServices\JobTicket_SSP\RecipientsInfo;
 
 class JobTicketClient extends BaseClient
 {

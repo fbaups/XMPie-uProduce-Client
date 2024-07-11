@@ -10,7 +10,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Csv;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use SoapFault;
-use XMPieWsdlClient\XMPie\uProduce\v_12_2\BasicServices\DataSourcePlanUtils_SSP\RecipientsInfo as DataSourceRecipientsInfo;
+use XMPieWsdlClient\XMPie\uProduce\v_13_2\BasicServices\DataSourcePlanUtils_SSP\RecipientsInfo as DataSourceRecipientsInfo;
 
 class DataSourceClient extends BaseClient
 {
