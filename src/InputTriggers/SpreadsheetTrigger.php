@@ -2,6 +2,8 @@
 
 namespace App\InputTriggers;
 
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -219,6 +221,98 @@ class SpreadsheetTrigger extends BaseTrigger
         $writer->save($savePath);
 
         return is_file($savePath);
+    }
+
+    /**
+     * Convert the XLSX spreadsheet into the required JSON format
+     *
+     * @param $triggerFile
+     * @return bool|string
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     */
+    public function convertTriggerToJson($triggerFile): bool|string
+    {
+        if (!is_file($triggerFile)) {
+            return false;
+        }
+
+        $spreadsheet = IOFactory::load($triggerFile);
+
+        $composition = [];
+
+        //read the Setup sheet
+        $worksheet = $spreadsheet->getSheetByName('Setup');
+        $highestRow = $worksheet->getHighestRow();
+        $rangeRows = range(2, $highestRow);
+        foreach ($rangeRows as $row) {
+            $composition['Setup'][$worksheet->getCell("A$row")->getValue()] = $worksheet->getCell("B$row")->getValue() ?? '';
+        }
+
+        //read the DataSource sheet
+        $worksheet = $spreadsheet->getSheetByName('DataSource');
+        $highestRow = $worksheet->getHighestRow();
+        $rangeRows = range(2, $highestRow);
+        foreach ($rangeRows as $row) {
+            $composition['DataSource'][$worksheet->getCell("A$row")->getValue()] = $worksheet->getCell("B$row")->getValue() ?? '';
+        }
+
+        //read the Recipients sheet
+        $worksheet = $spreadsheet->getSheetByName('Recipients');
+        $highestRow = $worksheet->getHighestRow();
+        $highestColumn = $worksheet->getHighestColumn();
+        $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn);
+        $records = [];
+        for ($row = 1; $row <= $highestRow; $row++) {
+            $rowData = [];
+            for ($col = 1; $col <= $highestColumnIndex; $col++) {
+                $colString = Coordinate::stringFromColumnIndex($col);
+                $cellValue = $worksheet->getCell("$colString$row")->getValue();
+                $rowData[] = $cellValue;
+            }
+            $records[] = $rowData;
+        }
+        //extract headers and remove [hint] data type in square brackets
+        $headers = $records[0];
+        $headers = array_map(function ($item) {
+            return preg_replace('/\[[^\]]*\]/', '', $item);
+        }, $headers);
+        unset($records[0]);
+        $recordsCleaned = [];
+        foreach ($records as $record) {
+            $recordsCleaned[] = array_combine($headers, $record);
+        }
+        $composition['Recipients'] = $recordsCleaned;
+
+
+        //read the Variables sheet
+        $worksheet = $spreadsheet->getSheetByName('Variables');
+        $highestRow = $worksheet->getHighestRow();
+        $rangeRows = range(2, $highestRow);
+        foreach ($rangeRows as $row) {
+            $composition['Variables'][$worksheet->getCell("A$row")->getValue()] = $worksheet->getCell("B$row")->getValue();
+        }
+
+        //read the Adors sheet
+        $worksheet = $spreadsheet->getSheetByName('Adors');
+        $highestRow = $worksheet->getHighestRow();
+        $rangeRows = range(2, $highestRow);
+        foreach ($rangeRows as $row) {
+            $composition['Adors'][$worksheet->getCell("A$row")->getValue()] = $worksheet->getCell("B$row")->getValue();
+        }
+
+        //read the JobTicket sheet
+        $worksheet = $spreadsheet->getSheetByName('JobTicket');
+        $highestRow = $worksheet->getHighestRow();
+        $rangeRows = range(2, $highestRow);
+        foreach ($rangeRows as $row) {
+            $val = $worksheet->getCell("B$row")->getValue();
+            if ($val === null) {
+                $val = '';
+            }
+            $composition['JobTicket'][$worksheet->getCell("A$row")->getValue()] = $val;
+        }
+
+        return (json_encode($composition, JSON_PRETTY_PRINT));
     }
 
 

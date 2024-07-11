@@ -943,36 +943,47 @@ class JobTicketClient extends BaseClient
     }
 
     /**
-     * Applies the units to the BLEED paramaters
+     * Applies the units to the BLEED parameters
      *
-     * @param $triggerfile
+     * @param $triggerFile
      * @return array
      */
-    public function applyBleedUnitsToTriggerFile($triggerfile): array
+    public function applyBleedUnitsToTriggerFile($triggerFile): array
     {
         $Geo = new PDFGeometry();
-        $units = strtolower($triggerfile['JobTicket']['OutputParameter_BLEED_UNITS']);
 
-        if (is_numeric($triggerfile['JobTicket']['OutputParameter_BLEED_TOP'])) {
-            $triggerfile['JobTicket']['OutputParameter_BLEED_TOP'] = ($Geo->convertUnit($triggerfile['JobTicket']['OutputParameter_BLEED_TOP'], $units, 'pts', 10));
-        }
-        if (is_numeric($triggerfile['JobTicket']['OutputParameter_BLEED_BOTTOM'])) {
-            $triggerfile['JobTicket']['OutputParameter_BLEED_BOTTOM'] = ($Geo->convertUnit($triggerfile['JobTicket']['OutputParameter_BLEED_BOTTOM'], $units, 'pts', 10));
-        }
-        if (is_numeric($triggerfile['JobTicket']['OutputParameter_BLEED_LEFTORINSIDE'])) {
-            $triggerfile['JobTicket']['OutputParameter_BLEED_LEFTORINSIDE'] = ($Geo->convertUnit($triggerfile['JobTicket']['OutputParameter_BLEED_LEFTORINSIDE'], $units, 'pts', 10));
-        }
-        if (is_numeric($triggerfile['JobTicket']['OutputParameter_BLEED_RIGHTOROUTSIDE'])) {
-            $triggerfile['JobTicket']['OutputParameter_BLEED_RIGHTOROUTSIDE'] = ($Geo->convertUnit($triggerfile['JobTicket']['OutputParameter_BLEED_RIGHTOROUTSIDE'], $units, 'pts', 10));
-        }
-        if (is_numeric($triggerfile['JobTicket']['OutputParameter_BLEED_X'])) {
-            $triggerfile['JobTicket']['OutputParameter_BLEED_X'] = ($Geo->convertUnit($triggerfile['JobTicket']['OutputParameter_BLEED_X'], $units, 'pts', 10));
-        }
-        if (is_numeric($triggerfile['JobTicket']['OutputParameter_BLEED_Y'])) {
-            $triggerfile['JobTicket']['OutputParameter_BLEED_Y'] = ($Geo->convertUnit($triggerfile['JobTicket']['OutputParameter_BLEED_Y'], $units, 'pts', 10));
+        if (!isset($triggerFile['JobTicket']['OutputParameter_BLEED_UNITS'])) {
+            return $triggerFile;
         }
 
-        return $triggerfile;
+        $units = $triggerFile['JobTicket']['OutputParameter_BLEED_UNITS'];
+
+        if (empty($units)) {
+            return $triggerFile;
+        }
+
+        $units = strtolower($units);
+
+        if (is_numeric($triggerFile['JobTicket']['OutputParameter_BLEED_TOP'])) {
+            $triggerFile['JobTicket']['OutputParameter_BLEED_TOP'] = ($Geo->convertUnit($triggerFile['JobTicket']['OutputParameter_BLEED_TOP'], $units, 'pts', 10));
+        }
+        if (is_numeric($triggerFile['JobTicket']['OutputParameter_BLEED_BOTTOM'])) {
+            $triggerFile['JobTicket']['OutputParameter_BLEED_BOTTOM'] = ($Geo->convertUnit($triggerFile['JobTicket']['OutputParameter_BLEED_BOTTOM'], $units, 'pts', 10));
+        }
+        if (is_numeric($triggerFile['JobTicket']['OutputParameter_BLEED_LEFTORINSIDE'])) {
+            $triggerFile['JobTicket']['OutputParameter_BLEED_LEFTORINSIDE'] = ($Geo->convertUnit($triggerFile['JobTicket']['OutputParameter_BLEED_LEFTORINSIDE'], $units, 'pts', 10));
+        }
+        if (is_numeric($triggerFile['JobTicket']['OutputParameter_BLEED_RIGHTOROUTSIDE'])) {
+            $triggerFile['JobTicket']['OutputParameter_BLEED_RIGHTOROUTSIDE'] = ($Geo->convertUnit($triggerFile['JobTicket']['OutputParameter_BLEED_RIGHTOROUTSIDE'], $units, 'pts', 10));
+        }
+        if (is_numeric($triggerFile['JobTicket']['OutputParameter_BLEED_X'])) {
+            $triggerFile['JobTicket']['OutputParameter_BLEED_X'] = ($Geo->convertUnit($triggerFile['JobTicket']['OutputParameter_BLEED_X'], $units, 'pts', 10));
+        }
+        if (is_numeric($triggerFile['JobTicket']['OutputParameter_BLEED_Y'])) {
+            $triggerFile['JobTicket']['OutputParameter_BLEED_Y'] = ($Geo->convertUnit($triggerFile['JobTicket']['OutputParameter_BLEED_Y'], $units, 'pts', 10));
+        }
+
+        return $triggerFile;
     }
 
     /**

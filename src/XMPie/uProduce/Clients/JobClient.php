@@ -163,16 +163,17 @@ class JobClient extends BaseClient
     /**
      * @param $id
      * @param int $index
+     * @param bool $inline
      * @return string|null
      * @throws SoapFault
      */
-    public function getOutputResultDownloadURL($id, int $index = 0): ?string
+    public function getOutputResultDownloadURL($id, int $index = 0, bool $inline = true): ?string
     {
         $Request = $this->RequestFabricator->Job_SSP()
             ->GetOutputResultDownloadURL()
             ->setInJobID($id)
             ->setInResultIndex($index)
-            ->setInIsInline(true)
+            ->setInIsInline($inline)
             ->setInReturnInternalURL(false);
         $Service = $this->ServiceFabricator->Job_SSP();
         $result = $Service->GetOutputResultDownloadURL($Request);

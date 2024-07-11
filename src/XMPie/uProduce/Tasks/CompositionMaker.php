@@ -2,8 +2,13 @@
 
 namespace App\XMPie\uProduce\Tasks;
 
+use App\InputTriggers\SpreadsheetTrigger;
 use arajcany\ToolBox\Utility\Security\Security;
+use League\MimeTypeDetection\FinfoMimeTypeDetector;
 
+/**
+ * Use this class to make uProduce to compose a Job.
+ */
 class CompositionMaker extends BaseTasks
 {
 
@@ -12,15 +17,35 @@ class CompositionMaker extends BaseTasks
         parent::__construct($xmpOptions, $soapOptions, $config);
     }
 
-    public function produceFromTriggerFile($triggerFile)
+    /**
+     * Pass a trigger file and a uProduce composition will be executed.
+     * An array of Job Numbers will be returned.
+     *
+     * Trigger file path can be a JSON or XLSX
+     *
+     * @param $triggerFile
+     * @return false|int[]
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \SoapFault
+     */
+    public function produceFromTriggerFile($triggerFile): array|bool
     {
         if (!is_file($triggerFile)) {
             return false;
         }
 
-        //load and apply generic fixes to the triggerFile
-        $triggerFileContents = file_get_contents($triggerFile);
-        $triggerFileContents = json_decode($triggerFileContents, JSON_OBJECT_AS_ARRAY);
+        $detector = new FinfoMimeTypeDetector();
+        $mimeType = $detector->detectMimeTypeFromFile($triggerFile);
+
+        if (str_contains($mimeType, 'sheet') || str_contains($mimeType, 'office')) {
+            $triggerFileContents = (new SpreadsheetTrigger())->convertTriggerToJson($triggerFile);
+            $triggerFileContents = json_decode($triggerFileContents, JSON_OBJECT_AS_ARRAY);
+        } else {
+            $triggerFileContents = file_get_contents($triggerFile);
+            $triggerFileContents = json_decode($triggerFileContents, JSON_OBJECT_AS_ARRAY);
+        }
+
+        //apply generic fixes to the triggerFile
         $triggerFileContents = $this->ClientFactory->JobTicketClient()->applyBleedUnitsToTriggerFile($triggerFileContents);
 
         $documentId = $triggerFileContents['Setup']['DocumentID'] ?? null;

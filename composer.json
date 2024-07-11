@@ -4,15 +4,15 @@
   "type": "project",
   "license": "MIT",
   "require": {
-    "php": ">=8.0",
     "ext-json": "*",
+    "ext-soap": "*",
+    "ext-dom": "*",
+    "php": ">=8.0",
     "fxaps/xmpie-wsdl-wrapper-uproduce": "12.*",
     "cakephp/core": "^4.4",
-    "ext-soap": "*",
     "cakephp/chronos": "^2.3",
     "phpoffice/phpspreadsheet": "^1.28",
     "league/csv": "^9.9",
-    "ext-dom": "*",
     "league/climate": "^3.8",
     "arajcany/tool-box": "^2.1",
     "arajcany/pre-press-tricks": "^1.1"
