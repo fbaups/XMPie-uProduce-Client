@@ -193,8 +193,18 @@ class CompositionMaker extends BaseTasks
         $automaticMerge = boolval($jobTicketProperties['AutomaticMerge']);
         $this->ClientFactory->JobTicketClient()->setAutomaticSubSplitAndMerge($ticketId, $automaticSubSplit, $automaticMerge);
 
+        //callback url that uProduce can reach to send reports to
+        if ($jobTicketProperties['JOBREPORT_CALLBACK_URL']) {
+            $this->ClientFactory->JobTicketClient()->setJobReportCallbackURL($ticketId, $jobTicketProperties['JOBREPORT_CALLBACK_URL']);
+        }
+        if ($jobTicketProperties['REPORT_WS_URL']) {
+            $this->ClientFactory->JobTicketClient()->setJobReportingWebService($ticketId, $jobTicketProperties['REPORT_WS_URL']);
+        }
+
         //debug the ticket
-        //dd($this->ClientFactory->JobTicketClient()->getTicket($ticketId,true));
+        //dd($this->ClientFactory->JobTicketClient()->getTicket($ticketId, true));
+        //$xmlTicket = $this->ClientFactory->JobTicketClient()->getTicket($ticketId, true);
+        //file_put_contents(getcwd() . "/lastJobTicket.xml", $xmlTicket);
 
         //produce the job
         $jobIds = $this->ClientFactory->ProductionClient()->submitJobs($ticketId);

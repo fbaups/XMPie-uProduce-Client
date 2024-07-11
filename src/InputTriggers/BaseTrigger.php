@@ -8,11 +8,13 @@ use arajcany\ToolBox\Utility\TextFormatter;
 class BaseTrigger
 {
     protected string $classDirectory;
+    protected string $tmpDirectory;
     protected ClientFactory $uProduceClientFactory;
 
     public function __construct()
     {
         $this->classDirectory = TextFormatter::makeDirectoryTrailingSmartSlash(dirname(__FILE__));
+        $this->tmpDirectory = TextFormatter::makeDirectoryTrailingSmartSlash(sys_get_temp_dir());
     }
 
     public function loadFactory($xmpOptions, $soapOptions, $config): void
@@ -57,6 +59,8 @@ class BaseTrigger
                 ['name' => 'AutomaticMerge', 'value' => false, 'hint' => '[Optional] bool (true|false)'],
                 ['name' => 'OutputBatchesOrRecords', 'value' => 'BATCHES', 'hint' => '[Optional] string (Must be one of "BATCHES", "RECORDS".)'],
                 ['name' => 'OutputBatchesOrRecordsCount', 'value' => '1', 'hint' => '[Optional] integer (The number of BATCHES to produce or the number of RECORDS to put in a batch.)'],
+                ['name' => 'JOBREPORT_CALLBACK_URL', 'value' => '', 'hint' => '[Optional] url (uProduce will POST Job status updates to this url in JSON format)'],
+                ['name' => 'REPORT_WS_URL', 'value' => '', 'hint' => '[Optional] url (uProduce will POST Job status updates to this url in XML format)'],
                 ['name' => 'OutputParameter_EMBEDED_ELEMENTS', 'value' => '', 'hint' => '**Consult the API documentation'],
                 ['name' => 'OutputParameter_EMBED_RESOURCES', 'value' => '', 'hint' => '**Consult the API documentation'],
                 ['name' => 'OutputParameter_EMBED_FONTS', 'value' => '', 'hint' => '**Consult the API documentation'],

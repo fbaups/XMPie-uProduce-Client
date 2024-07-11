@@ -35,7 +35,7 @@ class SpreadsheetTrigger extends BaseTrigger
         $planAdors = $this->uProduceClientFactory->PlanClient()->getADORs($planID);
 
         if (!$savePath) {
-            $savePath = $this->classDirectory . "../../tmp/Plan-{$planProperties['planID']}.xlsx";
+            $savePath = $this->tmpDirectory . "Plan-{$planProperties['planID']}.xlsx";
         }
 
         $setupOverrides = ['PlanID' => $planID];
@@ -67,7 +67,7 @@ class SpreadsheetTrigger extends BaseTrigger
         $planAdors = $this->uProduceClientFactory->PlanClient()->getADORs($planID);
 
         if (!$savePath) {
-            $savePath = $this->classDirectory . "../../tmp/Document-{$documentProperties['documentID']}.xlsx";
+            $savePath = $this->tmpDirectory . "Document-{$documentProperties['documentID']}.xlsx";
         }
 
         $setupOverrides = ['DocumentID' => $documentId];
@@ -215,7 +215,7 @@ class SpreadsheetTrigger extends BaseTrigger
         if ($filename) {
             $savePath = $filename;
         } else {
-            $savePath = $this->classDirectory . "../../tmp/sample.xlsx";
+            $savePath = $this->tmpDirectory . "sample.xlsx";
         }
         $writer = new Xlsx($spreadsheet);
         $writer->save($savePath);

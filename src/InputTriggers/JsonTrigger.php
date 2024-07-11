@@ -29,7 +29,7 @@ class JsonTrigger extends BaseTrigger
         $planAdors = $this->uProduceClientFactory->PlanClient()->getADORs($planID);
 
         if (!$savePath) {
-            $savePath = $this->classDirectory . "../../tmp/Plan-{$planProperties['planID']}.json";
+            $savePath = $this->tmpDirectory . "Plan-{$planProperties['planID']}.json";
         }
 
         $setupOverrides = ['PlanID' => $planID];
@@ -61,7 +61,7 @@ class JsonTrigger extends BaseTrigger
         $planAdors = $this->uProduceClientFactory->PlanClient()->getADORs($planID);
 
         if (!$savePath) {
-            $savePath = $this->classDirectory . "../../tmp/Document-{$documentProperties['documentID']}.json";
+            $savePath = $this->tmpDirectory . "Document-{$documentProperties['documentID']}.json";
         }
 
         $setupOverrides = ['DocumentID' => $documentId];
@@ -134,7 +134,7 @@ class JsonTrigger extends BaseTrigger
         if ($filename) {
             $savePath = $filename;
         } else {
-            $savePath = $this->classDirectory . "../../tmp/sample.json";
+            $savePath = $this->tmpDirectory . "sample.json";
         }
 
         file_put_contents($savePath, json_encode($jsonTrigger, JSON_PRETTY_PRINT));
