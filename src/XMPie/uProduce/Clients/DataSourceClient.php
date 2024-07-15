@@ -575,8 +575,8 @@ class DataSourceClient extends BaseClient
          * Formatting and return clean array (or false is problematic)
          */
 
-        //make sure it has more than 1 row
-        if (count($data) === 1) {
+        //make sure it has at least 1 row
+        if (count($data) === 0) {
             return false;
         }
 

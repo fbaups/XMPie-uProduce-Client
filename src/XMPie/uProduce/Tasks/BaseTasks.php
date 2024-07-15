@@ -3,6 +3,7 @@
 namespace App\XMPie\uProduce\Tasks;
 
 use App\XMPie\uProduce\Clients\ClientFactory;
+use arajcany\ToolBox\Utility\TextFormatter;
 
 class BaseTasks
 {
@@ -33,7 +34,7 @@ class BaseTasks
 
         $this->ClientFactory = new ClientFactory($xmpOptions, $soapOptions, $configDefault);
 
-        $this->tmpDir = getcwd() . "/";
+        $this->tmpDir = TextFormatter::makeDirectoryTrailingSmartSlash(sys_get_temp_dir());
         if (defined('TMP')) {
             $this->tmpDir = TMP;
         }

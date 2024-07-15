@@ -82,7 +82,10 @@ class CompositionMaker extends BaseTasks
         $rnd = Security::purl(6);
         $saveLocation = $this->tmpDir . "recipients-{$rnd}.xlsx";
         if ($recipients) {
-            $this->ClientFactory->DataSourceClient()->convertRawDataToDataFileForPlan($recipients, $planId, $saveLocation);
+            $convertResult = $this->ClientFactory->DataSourceClient()->convertRawDataToDataFileForPlan($recipients, $planId, $saveLocation);
+            if (!$convertResult) {
+                return false;
+            }
             $data = file_get_contents($saveLocation);
             $options = [
                 'campaignId' => $campaignId,

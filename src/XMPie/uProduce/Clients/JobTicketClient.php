@@ -302,9 +302,10 @@ class JobTicketClient extends BaseClient
      * @param string $subFilter
      * @param string $recipientIDListFileName
      * @param string $recipientIDListMergeType
+     * @param bool $sortByPrimaryField
      * @return RecipientsInfo
      */
-    public function createRecipientsInfo(string $filter, int $filterType, string $subFilter = '', string $recipientIDListFileName = '', string $recipientIDListMergeType = ''): RecipientsInfo
+    public function createRecipientsInfo(string $filter, int $filterType, string $subFilter = '', string $recipientIDListFileName = '', string $recipientIDListMergeType = '', bool $sortByPrimaryField = true): RecipientsInfo
     {
         /**
          * $filter
@@ -346,7 +347,8 @@ class JobTicketClient extends BaseClient
             ->setM_FilterType($filterType)
             ->setM_SubFilter($subFilter)
             ->setM_recipientIDListFileName($recipientIDListFileName)
-            ->setM_recipientIDListMergeType($recipientIDListMergeType);
+            ->setM_recipientIDListMergeType($recipientIDListMergeType)
+            ->setM_SortByPrimaryField($sortByPrimaryField);
 
         return $ri;
     }
