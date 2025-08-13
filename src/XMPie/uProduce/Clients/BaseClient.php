@@ -16,11 +16,11 @@ class BaseClient
     protected RequestFabricator $RequestFabricator;
     protected ServiceFabricator $ServiceFabricator;
 
-    public function __construct()
+    public function __construct(array $xmpOptions = [], array $soapOptions = [], array $config = [])
     {
-        $this->xmpOptions = Configure::read('XMPieClient.xmp_options');
-        $this->soapOptions = Configure::read('XMPieClient.soap_options');
-        $this->config = Configure::read('XMPieClient.config');
+        $this->xmpOptions = $xmpOptions;
+        $this->soapOptions = $soapOptions;
+        $this->config = $config;
 
         $Factory = new uProduceFactory($this->xmpOptions, $this->soapOptions, $this->config);
         $this->RequestFabricator = $Factory->getUProduceRequestFabricator();

@@ -8,9 +8,9 @@ use SoapFault;
 
 class LicensingClient extends BaseClient
 {
-    public function __construct()
+    public function __construct(array $xmpOptions = [], array $soapOptions = [], array $config = [])
     {
-        parent::__construct();
+        parent::__construct($xmpOptions, $soapOptions, $config);
     }
 
     /**
@@ -47,12 +47,8 @@ class LicensingClient extends BaseClient
      */
     public function isPerpetual(): ?bool
     {
-        $adminUsername = Configure::read('XMPieClient.xmp_options.admin_username');
-        $adminPassword = Configure::read('XMPieClient.xmp_options.admin_password');
         $Request = $this->RequestFabricator->Licensing_SSP()
-            ->IsPerpetual()
-            ->setInUsername($adminUsername)
-            ->setInPassword($adminPassword);
+            ->IsPerpetual();
         $Service = $this->ServiceFabricator->Licensing_SSP();
         $result = $Service->IsPerpetual($Request);
 
@@ -65,12 +61,8 @@ class LicensingClient extends BaseClient
      */
     public function isMIAvailable(): ?bool
     {
-        $adminUsername = Configure::read('XMPieClient.xmp_options.admin_username');
-        $adminPassword = Configure::read('XMPieClient.xmp_options.admin_password');
         $Request = $this->RequestFabricator->Licensing_SSP()
-            ->IsMIAvailable()
-            ->setInUsername($adminUsername)
-            ->setInPassword($adminPassword);
+            ->IsMIAvailable();
         $Service = $this->ServiceFabricator->Licensing_SSP();
         $result = $Service->IsMIAvailable($Request);
 
@@ -83,12 +75,8 @@ class LicensingClient extends BaseClient
      */
     public function getConnectivityLicenses(): array
     {
-        $adminUsername = Configure::read('XMPieClient.xmp_options.admin_username');
-        $adminPassword = Configure::read('XMPieClient.xmp_options.admin_password');
         $Request = $this->RequestFabricator->Licensing_SSP()
-            ->GetConnectivityLicenses()
-            ->setInUsername($adminUsername)
-            ->setInPassword($adminPassword);
+            ->GetConnectivityLicenses();
         $Service = $this->ServiceFabricator->Licensing_SSP();
         $result = $Service->GetConnectivityLicenses($Request);
 
@@ -103,13 +91,9 @@ class LicensingClient extends BaseClient
      */
     public function getFeatureClients(int $featureTypeId): mixed
     {
-        $adminUsername = Configure::read('XMPieClient.xmp_options.admin_username');
-        $adminPassword = Configure::read('XMPieClient.xmp_options.admin_password');
         $Request = $this->RequestFabricator->Licensing_SSP()
             ->GetFeatureClients()
-            ->setInFeatureTypeID($featureTypeId)
-            ->setInUsername($adminUsername)
-            ->setInPassword($adminPassword);
+            ->setInFeatureTypeID($featureTypeId);
         $Service = $this->ServiceFabricator->Licensing_SSP();
         $result = $Service->GetFeatureClients($Request);
 
@@ -124,13 +108,9 @@ class LicensingClient extends BaseClient
      */
     public function getMaximumFeatureClients(int $featureTypeId): mixed
     {
-        $adminUsername = Configure::read('XMPieClient.xmp_options.admin_username');
-        $adminPassword = Configure::read('XMPieClient.xmp_options.admin_password');
         $Request = $this->RequestFabricator->Licensing_SSP()
             ->GetMaximumFeatureClients()
-            ->setInFeatureTypeID($featureTypeId)
-            ->setInUsername($adminUsername)
-            ->setInPassword($adminPassword);
+            ->setInFeatureTypeID($featureTypeId);
         $Service = $this->ServiceFabricator->Licensing_SSP();
         $result = $Service->GetMaximumFeatureClients($Request);
 
@@ -143,8 +123,6 @@ class LicensingClient extends BaseClient
      */
     public function disconnectConnectivityLicenses(): array
     {
-        $adminUsername = Configure::read('XMPieClient.xmp_options.admin_username');
-        $adminPassword = Configure::read('XMPieClient.xmp_options.admin_password');
 
         $a = $this->getConnectivityLicenses();
 
@@ -162,8 +140,6 @@ class LicensingClient extends BaseClient
         foreach ($tables as $table) {
             $Request = $this->RequestFabricator->Licensing_SSP()
                 ->DeleteConnectivityLicense()
-                ->setInUsername($adminUsername)
-                ->setInPassword($adminPassword)
                 ->setInConnectivityLicenseID($table['clientID']);
             $Service = $this->ServiceFabricator->Licensing_SSP();
             $Response = $Service->DeleteConnectivityLicense($Request);

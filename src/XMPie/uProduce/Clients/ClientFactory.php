@@ -30,8 +30,6 @@ class ClientFactory
         $this->setXmpOptions($xmpOptions, false);
         $this->setSoapOptions($soapOptions, false);
         $this->setConfig($config, false);
-
-        $this->writeToConfiguration();
     }
 
     /**
@@ -39,12 +37,10 @@ class ClientFactory
      * @param bool $writeToConfiguration
      * @return ClientFactory
      */
-    public function setXmpOptions(array $xmpOptions, bool $writeToConfiguration = true): ClientFactory
+    public function setXmpOptions(array $xmpOptions): ClientFactory
     {
         $this->xmpOptions = $xmpOptions;
-        if ($writeToConfiguration) {
-            $this->writeToConfiguration();
-        }
+
         return $this;
     }
 
@@ -53,12 +49,10 @@ class ClientFactory
      * @param bool $writeToConfiguration
      * @return ClientFactory
      */
-    public function setSoapOptions(array $soapOptions, bool $writeToConfiguration = true): ClientFactory
+    public function setSoapOptions(array $soapOptions): ClientFactory
     {
         $this->soapOptions = $soapOptions;
-        if ($writeToConfiguration) {
-            $this->writeToConfiguration();
-        }
+
         return $this;
     }
 
@@ -67,7 +61,7 @@ class ClientFactory
      * @param bool $writeToConfiguration
      * @return ClientFactory
      */
-    public function setConfig(array $config, bool $writeToConfiguration = true): ClientFactory
+    public function setConfig(array $config): ClientFactory
     {
         $defaultConfig = [
             'security' => true,
@@ -76,20 +70,8 @@ class ClientFactory
         $config = array_merge($defaultConfig, $config);
 
         $this->config = $config;
-        if ($writeToConfiguration) {
-            $this->writeToConfiguration();
-        }
-        return $this;
-    }
 
-    /**
-     * Write values to Configure
-     */
-    private function writeToConfiguration()
-    {
-        Configure::write('XMPieClient.xmp_options', $this->xmpOptions);
-        Configure::write('XMPieClient.soap_options', $this->soapOptions);
-        Configure::write('XMPieClient.config', $this->config);
+        return $this;
     }
 
     /**
@@ -107,7 +89,7 @@ class ClientFactory
     public function CustomerClient(bool $refresh = false): ?CustomerClient
     {
         if ($refresh === true || $this->CustomerClient === null) {
-            $this->CustomerClient = new CustomerClient();
+            $this->CustomerClient = new CustomerClient($this->xmpOptions, $this->soapOptions, $this->config);
         }
 
         return $this->CustomerClient;
@@ -120,7 +102,7 @@ class ClientFactory
     public function AccountClient(bool $refresh = false): ?AccountClient
     {
         if ($refresh === true || $this->AccountClient === null) {
-            $this->AccountClient = new AccountClient();
+            $this->AccountClient = new AccountClient($this->xmpOptions, $this->soapOptions, $this->config);
         }
 
         return $this->AccountClient;
@@ -133,7 +115,7 @@ class ClientFactory
     public function CampaignClient(bool $refresh = false): ?CampaignClient
     {
         if ($refresh === true || $this->CampaignClient === null) {
-            $this->CampaignClient = new CampaignClient();
+            $this->CampaignClient = new CampaignClient($this->xmpOptions, $this->soapOptions, $this->config);
         }
 
         return $this->CampaignClient;
@@ -146,7 +128,7 @@ class ClientFactory
     public function PlanClient(bool $refresh = false): ?PlanClient
     {
         if ($refresh === true || $this->PlanClient === null) {
-            $this->PlanClient = new PlanClient();
+            $this->PlanClient = new PlanClient($this->xmpOptions, $this->soapOptions, $this->config);
         }
 
         return $this->PlanClient;
@@ -159,7 +141,7 @@ class ClientFactory
     public function DataSourceClient(bool $refresh = false): ?DataSourceClient
     {
         if ($refresh === true || $this->DataSourceClient === null) {
-            $this->DataSourceClient = new DataSourceClient();
+            $this->DataSourceClient = new DataSourceClient($this->xmpOptions, $this->soapOptions, $this->config);
         }
 
         return $this->DataSourceClient;
@@ -172,7 +154,7 @@ class ClientFactory
     public function DocumentClient(bool $refresh = false): ?DocumentClient
     {
         if ($refresh === true || $this->DocumentClient === null) {
-            $this->DocumentClient = new DocumentClient();
+            $this->DocumentClient = new DocumentClient($this->xmpOptions, $this->soapOptions, $this->config);
         }
 
         return $this->DocumentClient;
@@ -185,7 +167,7 @@ class ClientFactory
     public function TempStorageClient(bool $refresh = false): ?TempStorageClient
     {
         if ($refresh === true || $this->TempStorageClient === null) {
-            $this->TempStorageClient = new TempStorageClient();
+            $this->TempStorageClient = new TempStorageClient($this->xmpOptions, $this->soapOptions, $this->config);
         }
 
         return $this->TempStorageClient;
@@ -198,7 +180,7 @@ class ClientFactory
     public function DestinationClient(bool $refresh = false): ?DestinationClient
     {
         if ($refresh === true || $this->DestinationClient === null) {
-            $this->DestinationClient = new DestinationClient();
+            $this->DestinationClient = new DestinationClient($this->xmpOptions, $this->soapOptions, $this->config);
         }
 
         return $this->DestinationClient;
@@ -211,7 +193,7 @@ class ClientFactory
     public function UserClient(bool $refresh = false): ?UserClient
     {
         if ($refresh === true || $this->UserClient === null) {
-            $this->UserClient = new UserClient();
+            $this->UserClient = new UserClient($this->xmpOptions, $this->soapOptions, $this->config);
         }
 
         return $this->UserClient;
@@ -224,7 +206,7 @@ class ClientFactory
     public function LicensingClient(bool $refresh = false): ?LicensingClient
     {
         if ($refresh === true || $this->LicensingClient === null) {
-            $this->LicensingClient = new LicensingClient();
+            $this->LicensingClient = new LicensingClient($this->xmpOptions, $this->soapOptions, $this->config);
         }
 
         return $this->LicensingClient;
@@ -237,7 +219,7 @@ class ClientFactory
     public function JobClient(bool $refresh = false): ?JobClient
     {
         if ($refresh === true || $this->JobClient === null) {
-            $this->JobClient = new JobClient();
+            $this->JobClient = new JobClient($this->xmpOptions, $this->soapOptions, $this->config);
         }
 
         return $this->JobClient;
@@ -250,7 +232,7 @@ class ClientFactory
     public function JobMessageClient(bool $refresh = false): ?JobMessageClient
     {
         if ($refresh === true || $this->JobMessageClient === null) {
-            $this->JobMessageClient = new JobMessageClient();
+            $this->JobMessageClient = new JobMessageClient($this->xmpOptions, $this->soapOptions, $this->config);
         }
 
         return $this->JobMessageClient;
@@ -263,7 +245,7 @@ class ClientFactory
     public function JobTicketClient(bool $refresh = false): ?JobTicketClient
     {
         if ($refresh === true || $this->JobTicketClient === null) {
-            $this->JobTicketClient = new JobTicketClient();
+            $this->JobTicketClient = new JobTicketClient($this->xmpOptions, $this->soapOptions, $this->config);
         }
 
         return $this->JobTicketClient;
@@ -276,7 +258,7 @@ class ClientFactory
     public function ProductionClient(bool $refresh = false): ?ProductionClient
     {
         if ($refresh === true || $this->ProductionClient === null) {
-            $this->ProductionClient = new ProductionClient();
+            $this->ProductionClient = new ProductionClient($this->xmpOptions, $this->soapOptions, $this->config);
         }
 
         return $this->ProductionClient;

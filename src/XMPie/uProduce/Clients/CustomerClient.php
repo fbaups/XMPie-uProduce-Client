@@ -6,9 +6,9 @@ use SoapFault;
 
 class CustomerClient extends BaseClient
 {
-    public function __construct()
+    public function __construct(array $xmpOptions = [], array $soapOptions = [], array $config = [])
     {
-        parent::__construct();
+        parent::__construct($xmpOptions, $soapOptions, $config);
     }
 
     /**

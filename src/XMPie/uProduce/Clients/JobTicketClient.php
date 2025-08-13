@@ -13,9 +13,9 @@ use XMPieWsdlClient\XMPie\uProduce\v_13_2\ProductionServices\JobTicket_SSP\Recip
 
 class JobTicketClient extends BaseClient
 {
-    public function __construct()
+    public function __construct(array $xmpOptions = [], array $soapOptions = [], array $config = [])
     {
-        parent::__construct();
+        parent::__construct($xmpOptions, $soapOptions, $config);
     }
 
     /**
