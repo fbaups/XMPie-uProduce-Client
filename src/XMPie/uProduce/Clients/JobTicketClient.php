@@ -458,7 +458,7 @@ class JobTicketClient extends BaseClient
      */
     public function setCustomisationVariables($ticketId, $planId, $variables): array
     {
-        $planVariables = (new PlanClient())->getVariables($planId);
+        $planVariables = (new PlanClient($this->xmpOptions, $this->soapOptions, $this->config))->getVariables($planId);
         $results = [];
         foreach ($variables as $k => $v) {
             if ($v === null) {
@@ -498,7 +498,7 @@ class JobTicketClient extends BaseClient
      */
     public function setCustomisationAdors($ticketId, $planId, $adors): array
     {
-        $planAdors = (new PlanClient())->getADORs($planId);
+        $planAdors = (new PlanClient($this->xmpOptions, $this->soapOptions, $this->config))->getADORs($planId);
         $results = [];
         foreach ($adors as $k => $v) {
             if ($v === null) {

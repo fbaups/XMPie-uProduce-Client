@@ -145,7 +145,7 @@ class DataSourceClient extends BaseClient
      */
     public function createCounterDS(array $options = []): bool|int|string
     {
-        $tz = Configure::read('XMPieClient.config.timezone');
+        $tz = $this->config['timezone'];
         $currentDate = (new Chronos())->setTimezone($tz);
         $date = $currentDate->format("Y-m-d H:i:s");
 
@@ -190,7 +190,7 @@ class DataSourceClient extends BaseClient
      */
     public function createTxtDS($data, array $options = []): bool|int|string
     {
-        $tz = Configure::read('XMPieClient.config.timezone');
+        $tz = $this->config['timezone'];
         $currentDate = (new Chronos())->setTimezone($tz);
         $date = $currentDate->format("Y-m-d H:i:s");
         $rnd = sha1(mt_rand() . mt_rand());
@@ -255,7 +255,7 @@ class DataSourceClient extends BaseClient
      */
     public function createXlsxDS($data, array $options = []): bool|int|string
     {
-        $tz = Configure::read('XMPieClient.config.timezone');
+        $tz = $this->config['timezone'];
         $currentDate = (new Chronos())->setTimezone($tz);
         $date = $currentDate->format("Y-m-d H:i:s");
         $rnd = sha1(mt_rand() . mt_rand());
@@ -311,7 +311,7 @@ class DataSourceClient extends BaseClient
      */
     private function createDataSource(array $options = []): bool|int|string
     {
-        $tz = Configure::read('XMPieClient.config.timezone');
+        $tz = $this->config['timezone'];
         $currentDate = (new Chronos())->setTimezone($tz);
         $date = $currentDate->format("Y-m-d H:i:s");
 

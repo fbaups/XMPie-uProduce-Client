@@ -2,6 +2,7 @@
 
 namespace App\XMPie\uProduce\Clients;
 
+use arajcany\ToolBox\Utility\Feedback\ReturnAlerts;
 use Cake\Core\Configure;
 use XMPieWsdlClient\uProduceFactory;
 use XMPieWsdlClient\XMPie\uProduce\v_13_2\Fabricator\RequestFabricator;
@@ -9,6 +10,8 @@ use XMPieWsdlClient\XMPie\uProduce\v_13_2\Fabricator\ServiceFabricator;
 
 class BaseClient
 {
+    use ReturnAlerts;
+
     protected array $xmpOptions;
     protected array $soapOptions;
     protected array $config;
@@ -18,9 +21,9 @@ class BaseClient
 
     public function __construct(array $xmpOptions = [], array $soapOptions = [], array $config = [])
     {
-        $this->xmpOptions = $xmpOptions;
-        $this->soapOptions = $soapOptions;
-        $this->config = $config;
+        $this->xmpOptions = array_merge($this->getDefaultXmpOptions(), $xmpOptions);
+        $this->soapOptions = array_merge($this->getDefaultSoapOptions(), $soapOptions);
+        $this->config = array_merge($this->getDefaultConfigOptions(), $config);
 
         $Factory = new uProduceFactory($this->xmpOptions, $this->soapOptions, $this->config);
         $this->RequestFabricator = $Factory->getUProduceRequestFabricator();
@@ -74,5 +77,29 @@ class BaseClient
         }
 
         return false;
+    }
+
+    public function getDefaultXmpOptions(): array
+    {
+        return [
+            'url' => '',
+            'admin_username' => '',
+            'admin_password' => '',
+            'username' => '',
+            'password' => '',
+        ];
+    }
+
+    public function getDefaultSoapOptions(): array
+    {
+        return [];
+    }
+
+    public function getDefaultConfigOptions(): array
+    {
+        return [
+            'security' => true,
+            'timezone' => 'utc',
+        ];
     }
 }

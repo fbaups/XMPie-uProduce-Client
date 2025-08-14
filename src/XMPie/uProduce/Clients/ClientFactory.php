@@ -27,9 +27,9 @@ class ClientFactory
 
     public function __construct(array $xmpOptions = [], array $soapOptions = [], array $config = [])
     {
-        $this->setXmpOptions($xmpOptions, false);
-        $this->setSoapOptions($soapOptions, false);
-        $this->setConfig($config, false);
+        $this->setXmpOptions($xmpOptions);
+        $this->setSoapOptions($soapOptions);
+        $this->setConfig($config);
     }
 
     /**

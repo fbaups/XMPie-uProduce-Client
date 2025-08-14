@@ -19,8 +19,8 @@ class JobMessageClient extends BaseClient
      */
     public function getAllProperties($id): ?array
     {
-        $adminUsername = Configure::read('XMPieClient.xmp_options.admin_username');
-        $adminPassword = Configure::read('XMPieClient.xmp_options.admin_password');
+        $adminUsername = $this->xmpOptions['admin_username'];
+        $adminPassword = $this->xmpOptions['admin_password'];
 
         $Request = $this->RequestFabricator->JobMessage_SSP()
             ->GetAllProperties()
