@@ -82,7 +82,7 @@ class CustomerClient extends BaseClient
         $props = $this->getAllProperties();
 
         if (isset($props['adminID'])) {
-            $UC = new UserClient();
+            $UC = new UserClient($this->xmpOptions, $this->soapOptions, $this->config);
             $adminUser = $UC->getAllProperties($props['adminID']);
         } else {
             $adminUser = [];
@@ -100,7 +100,7 @@ class CustomerClient extends BaseClient
         $props = $this->getAllProperties();
 
         if (isset($props['adminID'])) {
-            $UC = new UserClient();
+            $UC = new UserClient($this->xmpOptions, $this->soapOptions, $this->config);
             $adminUser = intval($UC->getAllProperties($props['adminID'])['userID']);
         } else {
             $adminUser = null;
@@ -118,7 +118,7 @@ class CustomerClient extends BaseClient
         $props = $this->getAllProperties();
 
         if (isset($props['adminID'])) {
-            $UC = new UserClient();
+            $UC = new UserClient($this->xmpOptions, $this->soapOptions, $this->config);
             $adminUser = $UC->getAllProperties($props['adminID'])['LoginName'];
         } else {
             $adminUser = null;
@@ -138,7 +138,7 @@ class CustomerClient extends BaseClient
         $Service = $this->ServiceFabricator->Customer_SSP();
         $result = $Service->GetAccounts($Request);
 
-        $AC = new AccountClient();
+        $AC = new AccountClient($this->xmpOptions, $this->soapOptions, $this->config);
 
         $accounts = [];
         foreach ($result->getGetAccountsResult() as $accountId) {
@@ -160,7 +160,7 @@ class CustomerClient extends BaseClient
         $Service = $this->ServiceFabricator->Customer_SSP();
         $result = $Service->GetUsers($Request);
 
-        $UC = new UserClient();
+        $UC = new UserClient($this->xmpOptions, $this->soapOptions, $this->config);
 
         $users = [];
         foreach ($result->getGetUsersResult() as $userId) {
@@ -188,7 +188,7 @@ class CustomerClient extends BaseClient
         $Service = $this->ServiceFabricator->Customer_SSP();
         $result = $Service->GetDestinations($Request);
 
-        $UC = new DestinationClient();
+        $UC = new DestinationClient($this->xmpOptions, $this->soapOptions, $this->config);
 
         $destinations = [];
         foreach ($result->getGetDestinationsResult() as $destinationId) {

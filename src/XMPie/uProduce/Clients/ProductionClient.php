@@ -61,7 +61,7 @@ class ProductionClient extends BaseClient
      */
     public function submitJobsAsBatchesFlagParallel($ticketId, string $type, int $count, bool $isParallel = false): array
     {
-        $JobTicketClient = new JobTicketClient();
+        $JobTicketClient = new JobTicketClient($this->xmpOptions, $this->soapOptions, $this->config);
         if ($isParallel) {
             $JobTicketClient->setAutomaticSubSplitAndMerge($ticketId, true, true);
         } else {
@@ -100,7 +100,7 @@ class ProductionClient extends BaseClient
      */
     public function submitJobsFlagParallel($ticketId, bool $isParallel = false): array
     {
-        $JobTicketClient = new JobTicketClient();
+        $JobTicketClient = new JobTicketClient($this->xmpOptions, $this->soapOptions, $this->config);
         if ($isParallel) {
             $JobTicketClient->setAutomaticSubSplitAndMerge($ticketId, true, true);
         } else {

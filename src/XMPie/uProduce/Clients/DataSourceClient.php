@@ -207,7 +207,7 @@ class DataSourceClient extends BaseClient
         $options = array_merge($defaultOptions, $options);
 
         //upload the data to TmpStorage
-        $TS = new TempStorageClient();
+        $TS = new TempStorageClient($this->xmpOptions, $this->soapOptions, $this->config);
         $extension = pathinfo($options['fileName'], PATHINFO_EXTENSION);
         $tmpFileName = "{$rnd}.{$extension}";
         $storageToken = $TS->uploadToStorageFileInFolder($tmpFileName, $data);
@@ -272,7 +272,7 @@ class DataSourceClient extends BaseClient
         $options = array_merge($defaultOptions, $options);
 
         //upload the data to TmpStorage
-        $TS = new TempStorageClient();
+        $TS = new TempStorageClient($this->xmpOptions, $this->soapOptions, $this->config);
         $extension = pathinfo($options['fileName'], PATHINFO_EXTENSION);
         $tmpFileName = "{$rnd}.{$extension}";
         $storageToken = $TS->uploadToStorageFileInFolder($tmpFileName, $data);
@@ -642,7 +642,7 @@ class DataSourceClient extends BaseClient
             $format = 'array';
         }
 
-        $PC = new PlanClient();
+        $PC = new PlanClient($this->xmpOptions, $this->soapOptions, $this->config);
         $recipientFields = $PC->getRecipientFields($planId);
         $inflectedHeaders = $this->getInflections();
 

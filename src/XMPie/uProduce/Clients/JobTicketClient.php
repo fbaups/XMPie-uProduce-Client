@@ -365,7 +365,7 @@ class JobTicketClient extends BaseClient
      */
     public function getValidTableNameForDataSource(int $dataSourceId, string $dataSourceTableName = null): bool|string
     {
-        $DataSourceClient = new DataSourceClient();
+        $DataSourceClient = new DataSourceClient($this->xmpOptions, $this->soapOptions, $this->config);
         $compatibleTables = $DataSourceClient->getDataSourceCompatibleTables($dataSourceId);
 
         if (in_array($dataSourceTableName, $compatibleTables)) {
