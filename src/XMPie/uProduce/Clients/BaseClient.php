@@ -9,9 +9,9 @@ use XMPieWsdlClient\XMPie\uProduce\v_13_2\Fabricator\ServiceFabricator;
 
 class BaseClient
 {
-    private array $xmpOptions;
-    private array $soapOptions;
-    private array $config;
+    protected array $xmpOptions;
+    protected array $soapOptions;
+    protected array $config;
 
     protected RequestFabricator $RequestFabricator;
     protected ServiceFabricator $ServiceFabricator;
